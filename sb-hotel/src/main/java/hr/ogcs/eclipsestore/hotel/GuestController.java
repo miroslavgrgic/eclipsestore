@@ -1,8 +1,6 @@
 package hr.ogcs.eclipsestore.hotel;
 
-import hr.ogcs.eclipsestore.hotel.model.Booking;
 import hr.ogcs.eclipsestore.hotel.model.Guest;
-import hr.ogcs.eclipsestore.hotel.service.BookingService;
 import hr.ogcs.eclipsestore.hotel.service.GuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

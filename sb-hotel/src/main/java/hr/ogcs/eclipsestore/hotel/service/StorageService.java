@@ -17,14 +17,10 @@ public class StorageService {
 
     private String path = "hotel";
 
-    private StorageService() {
+    public StorageService() {
         this.schema = new Schema();
         this.storageManager = EmbeddedStorage.start(schema, Paths.get(path));
-        log.info("StorageManager and Schema successfully initiated.");
-    }
-
-    protected void storeRoot() {
-        storageManager.storeRoot();
+        log.info("StorageManager and Schema successfully initiated in path: {}", path);
     }
 
     protected void store(Object obj) {

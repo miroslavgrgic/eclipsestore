@@ -1,7 +1,6 @@
 package hr.ogcs.eclipsestore.service;
 
 import hr.ogcs.eclipsestore.model.Booking;
-import hr.ogcs.eclipsestore.model.Schema;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +27,11 @@ public class BookingService {
         roomService.getAllRooms().stream()
                 .filter(room -> room.getId().equals(booking.getRoom().getId()))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
 
         booking.getGuests().stream().forEach(guest -> guest.setId(UUID.randomUUID()));
         persistenceService.getSchema().getBookings().add(booking);
-        persistenceService.getStorageManager().store(booking);
+        persistenceService.getStorageManager().store(persistenceService.getSchema().getBookings());
         return booking;
     }
 

@@ -1,12 +1,9 @@
 package hr.ogcs.eclipsestore.hotel.service;
 
-import hr.ogcs.eclipsestore.hotel.model.Booking;
 import hr.ogcs.eclipsestore.hotel.model.Guest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +12,7 @@ import java.util.UUID;
 @Slf4j
 public class GuestService {
 
-    final StorageService storageService;
+    private StorageService storageService;
 
     public GuestService(StorageService storageService) {
         this.storageService = storageService;
@@ -23,18 +20,6 @@ public class GuestService {
 
     public List<Guest> getAllGuests() {
         return storageService.schema.getGuests();
-    }
-
-    public Guest createGuest(String firstName, String lastName, int age) {
-        var guest = Guest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .age(age)
-                .build();
-
-        storageService.schema.getGuests().add(guest);
-        storageService.storeRoot();
-        return guest;
     }
 
     public Guest createGuest(Guest guest) {
@@ -47,7 +32,7 @@ public class GuestService {
                 .build();
 
         storageService.schema.getGuests().add(newGuest);
-        storageService.store(newGuest);
+        storageService.store(storageService.schema.getGuests());
         return newGuest;
     }
 
@@ -70,4 +55,5 @@ public class GuestService {
             log.info("Deleted Guest with ID {}", id);
         }
     }
+
 }

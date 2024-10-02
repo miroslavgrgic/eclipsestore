@@ -14,12 +14,14 @@ import java.util.UUID;
 @Slf4j
 public class BookingService {
 
-    final StorageService storageService;
-    final GuestService guestService;
+    private StorageService storageService;
+    private GuestService guestService;
+    private RoomService roomService;
 
-    public BookingService(StorageService storageService, GuestService guestService) {
+    public BookingService(StorageService storageService, GuestService guestService, RoomService roomService) {
         this.storageService = storageService;
         this.guestService = guestService;
+        this.roomService = roomService;
     }
 
     public List<Booking> getAllBookings() {
@@ -27,10 +29,15 @@ public class BookingService {
     }
 
     public Booking createBooking(Booking booking) {
+        // check if room exists
+        roomService.findById(booking.getRoom().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
 
+        // check if guest already exists
         List<Guest> potentialNewGuests = new ArrayList<>();
         booking.getGuests().stream().forEach(
                 guest -> {
+                    // TODO last name is not enough - an dedicated equals could handle it
                     guestService.findByLastname(guest.getLastName())
                         .ifPresent(g -> potentialNewGuests.add(g));
                 }
@@ -44,14 +51,13 @@ public class BookingService {
                 guest.setId(UUID.randomUUID());
                 guestService.createGuest(guest);
             });
-
         }
 
         storageService.schema.getBookings().add(booking);
 
         // STORE IT!
         booking.setId(UUID.randomUUID());
-        storageService.store(booking);
+        storageService.store(storageService.schema.getBookings());
         log.info("Created booking: {}", booking);
 
         return booking;
