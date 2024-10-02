@@ -1,11 +1,11 @@
-package hr.ogcs.eclipsestore;
+package hr.ogcs.eclipsestore.api;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import lombok.extern.slf4j.Slf4j;
 
-//@Provider
+@Provider
 @Slf4j
 public class CatchThemAllExceptionHandler implements ExceptionMapper<Exception> {
 

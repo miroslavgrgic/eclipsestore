@@ -12,14 +12,18 @@ import java.util.UUID;
 @Slf4j
 public class BookingService {
 
-    @Inject
-    private PersistenceService persistenceService;
-
-    @Inject
+    private StorageService storageService;
+    private GuestService guestService;
     private RoomService roomService;
 
+    public BookingService(StorageService storageService, GuestService guestService, RoomService roomService) {
+        this.storageService = storageService;
+        this.guestService = guestService;
+        this.roomService = roomService;
+    }
+
     public List<Booking> getAllBookings() {
-        return persistenceService.getSchema().getBookings();
+        return storageService.schema.getBookings();
     }
 
     public Booking createBooking(Booking booking) {
@@ -29,9 +33,13 @@ public class BookingService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
 
+        // Check if guest exists
+        guestService.checkGuests(booking.getGuests());
+
         booking.getGuests().stream().forEach(guest -> guest.setId(UUID.randomUUID()));
-        persistenceService.getSchema().getBookings().add(booking);
-        persistenceService.getStorageManager().store(persistenceService.getSchema().getBookings());
+        storageService.schema.getBookings().add(booking);
+        // STORE IT!
+        storageService.storageManager.store(storageService.schema.getBookings());
         return booking;
     }
 

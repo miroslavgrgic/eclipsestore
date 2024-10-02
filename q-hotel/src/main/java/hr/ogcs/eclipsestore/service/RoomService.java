@@ -1,8 +1,6 @@
 package hr.ogcs.eclipsestore.service;
 
-import hr.ogcs.eclipsestore.model.Booking;
 import hr.ogcs.eclipsestore.model.Room;
-import hr.ogcs.eclipsestore.model.Schema;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -14,17 +12,21 @@ import java.util.UUID;
 @Slf4j
 public class RoomService {
 
-    @Inject
-    private PersistenceService persistenceService;
+    private StorageService storageService;
+
+    public RoomService(StorageService storageService) {
+        this.storageService = storageService;
+    }
 
     public List<Room> getAllRooms() {
-        return persistenceService.getSchema().getRooms();
+        return storageService.schema.getRooms();
     }
 
     public Room createRoom(Room room) {
         room.setId(UUID.randomUUID());
-        persistenceService.getSchema().getRooms().add(room);
-        persistenceService.getStorageManager().store(room);
+        storageService.schema.getRooms().add(room);
+        // STORE IT!
+        storageService.storageManager.store(storageService.schema.getRooms());
         return room;
     }
 }

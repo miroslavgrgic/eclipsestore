@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore;
+package hr.ogcs.eclipsestore.api;
 
 import hr.ogcs.eclipsestore.model.Booking;
 import hr.ogcs.eclipsestore.service.BookingService;

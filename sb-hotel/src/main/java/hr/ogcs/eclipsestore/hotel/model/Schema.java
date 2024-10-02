@@ -8,10 +8,11 @@ import java.util.List;
 @Getter
 public class Schema {
 
-    public Schema() {}
-
+    // Our Domain Model
     private List<Booking> bookings = new ArrayList<>();
     private List<Room> rooms = new ArrayList<>();
     private List<Guest> guests = new ArrayList<>();
+
+    // TODO implement some Domain related methods
 
 }
