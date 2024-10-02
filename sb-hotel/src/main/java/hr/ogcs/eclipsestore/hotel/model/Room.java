@@ -1,17 +1,14 @@
 package hr.ogcs.eclipsestore.hotel.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Builder
 @Getter
+@ToString
 public class Room {
 
     @Builder.Default

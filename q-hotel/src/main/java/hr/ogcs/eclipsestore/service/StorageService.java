@@ -15,7 +15,7 @@ public class StorageService {
     protected final Schema schema;
     protected final EmbeddedStorageManager storageManager;
 
-    private final String path = "hotel";
+    private final String path = "q-hotel/database";
 
     public StorageService() {
         this.schema = new Schema();
