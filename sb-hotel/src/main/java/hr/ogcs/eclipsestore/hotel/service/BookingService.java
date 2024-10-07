@@ -33,6 +33,10 @@ public class BookingService {
         roomService.findById(booking.getRoom().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
 
+        if (booking.getRoom().maxNumberOfGuests() < booking.getGuests().size()) {
+            throw new IllegalArgumentException("Too many guests for this room");
+        }
+
         // check if guest already exists
         List<Guest> potentialNewGuests = new ArrayList<>();
         booking.getGuests().stream().forEach(
@@ -53,10 +57,10 @@ public class BookingService {
             });
         }
 
+        booking.setId(UUID.randomUUID());
         storageService.schema.getBookings().add(booking);
 
         // STORE IT!
-        booking.setId(UUID.randomUUID());
         storageService.store(storageService.schema.getBookings());
         log.info("Created booking: {}", booking);
 

@@ -23,7 +23,7 @@ public class Room {
 
     private boolean canBeUsedWithHandicaps;
 
-//    private Map<Object, Object> combinations = Map.of(
+//    private Set<Object, Integer> combinations = Set.of(
 //
 //    );
 
@@ -35,7 +35,7 @@ public class Room {
 
     private LocalDate availableSince;
 
-    private enum State {
+    public enum State {
         FREE,
         BLOCKED
     }

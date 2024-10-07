@@ -24,10 +24,4 @@ public class Booking {
 
     private LocalDate date;
 
-
-    // TODO move logic to
-//    public Optional<Booking> getBooking(UUID id) {
-//        return bookings.stream().filter(booking -> booking.getId().equals(id)).findFirst();
-//    }
-
 }

@@ -23,17 +23,13 @@ public class GuestService {
     }
 
     public Guest createGuest(Guest guest) {
-        var newGuest = Guest.builder()
-                .id(UUID.randomUUID())
-                .address(guest.getAddress())
-                .firstName(guest.getFirstName())
-                .lastName(guest.getLastName())
-                .age(guest.getAge())
-                .build();
+        if (guest.getId() == null) {
+            guest.setId(UUID.randomUUID());
+        }
 
-        storageService.schema.getGuests().add(newGuest);
+        storageService.schema.getGuests().add(guest);
         storageService.store(storageService.schema.getGuests());
-        return newGuest;
+        return guest;
     }
 
     public Optional<Guest> findByLastname(String lastName) {

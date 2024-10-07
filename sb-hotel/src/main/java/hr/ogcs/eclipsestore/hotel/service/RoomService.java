@@ -23,21 +23,15 @@ public class RoomService {
     }
 
     public Room createRoom(Room room) {
-        var newRoom = Room.builder()
-                .id(UUID.randomUUID())
-                .name(room.getName())
-                .sqm(room.getSqm())
-                .state(room.getState())
-                .bedSizes(room.getBedSizes())
-                .availableSince(room.getAvailableSince())
-                .canBeUsedWithHandicaps(room.isCanBeUsedWithHandicaps())
-                .build();
+        if (room.getId() == null) {
+            room.setId(UUID.randomUUID());
+        }
 
         // add to existing list
-        storageService.schema.getRooms().add(newRoom);
+        storageService.schema.getRooms().add(room);
 
         storageService.store(storageService.schema.getRooms());
-        return newRoom;
+        return room;
     }
 
     public void deleteRoomByID(String id) {
@@ -58,6 +52,10 @@ public class RoomService {
         return storageService.schema.getRooms().stream()
                 .filter(room -> room.getId().equals(id))
                 .findFirst();
+    }
+
+    public void extendBeds(Room room, int width, int length) {
+        room.addAdditionalBedSize(width, length);
     }
 
 }
