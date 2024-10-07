@@ -23,6 +23,7 @@ public class GuestService {
     }
 
     public Guest createGuest(Guest guest) {
+        // TODO check if Guest already exists
         return guestRepository.save(guest);
     }
 

@@ -2,12 +2,10 @@ package hr.ogcs.eclipsestore.hotel.service;
 
 import hr.ogcs.eclipsestore.hotel.model.Booking;
 import hr.ogcs.eclipsestore.hotel.model.BookingDto;
-import hr.ogcs.eclipsestore.hotel.model.Guest;
 import hr.ogcs.eclipsestore.hotel.repository.BookingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

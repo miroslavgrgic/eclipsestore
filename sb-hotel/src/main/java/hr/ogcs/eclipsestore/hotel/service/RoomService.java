@@ -27,12 +27,13 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
-    public void deleteRoomByID(String id) {
-        roomRepository.deleteById(UUID.fromString(id));
-    }
-
     public Optional<Room> findById(UUID id) {
         return roomRepository.findById(id);
+    }
+
+    public void deleteRoomByID(String id) {
+        // TODO check if Bookings exist before deleting
+        roomRepository.deleteById(UUID.fromString(id));
     }
 
 }
