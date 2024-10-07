@@ -8,13 +8,15 @@ import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
 class BookingResourceTest {
+
     @Test
-    void testHelloEndpoint() {
+    void should_fetch_all_guests() {
         given()
-          .when().get("/hello")
+          .when().get("/guests")
           .then()
              .statusCode(200)
-             .body(is("Hello from Quarkus REST"));
+                // FIXME fetch Guest objects
+             .body(is("Hello World"));
     }
 
 }
