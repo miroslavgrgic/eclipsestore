@@ -1,34 +1,31 @@
 package hr.ogcs.eclipsestore.hotel.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Builder
-@Getter
-@ToString
+@Entity
+@Table(name = "booking")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Guest {
-
-    @Builder.Default
-    @Setter
-    private UUID id = UUID.randomUUID();
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
     private String firstName;
     private String lastName;
 
     private int age;
 
-    private Address address;
-
-    public boolean isAllowedToConsumeAlcohol() {
-        return age >= 18;
-    }
-
-    public boolean isChildren() {
-        return age < 13;
-    }
+    private String street;
+    private Integer postalCode;
+    private String city;
+    private String state;
 
 }

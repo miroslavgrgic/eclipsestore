@@ -1,6 +1,7 @@
-package hr.ogcs.eclipsestore.hotel;
+package hr.ogcs.eclipsestore.hotel.api;
 
 import hr.ogcs.eclipsestore.hotel.model.Booking;
+import hr.ogcs.eclipsestore.hotel.model.BookingDto;
 import hr.ogcs.eclipsestore.hotel.service.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,9 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking(booking);
-        return ResponseEntity.status(HttpStatus.OK).body(newBooking);
+    public ResponseEntity createBooking(@RequestBody BookingDto booking) {
+        bookingService.createBooking(booking);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
