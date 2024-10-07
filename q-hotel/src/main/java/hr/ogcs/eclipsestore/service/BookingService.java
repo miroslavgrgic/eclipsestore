@@ -11,18 +11,16 @@ import java.util.UUID;
 @Slf4j
 public class BookingService {
 
-    private StorageService storageService;
     private GuestService guestService;
     private RoomService roomService;
 
-    public BookingService(StorageService storageService, GuestService guestService, RoomService roomService) {
-        this.storageService = storageService;
+    public BookingService(GuestService guestService, RoomService roomService) {
         this.guestService = guestService;
         this.roomService = roomService;
     }
 
     public List<Booking> getAllBookings() {
-        return storageService.schema.getBookings();
+        return StorageService.schema.getBookings();
     }
 
     public Booking createBooking(Booking booking) {
@@ -36,9 +34,9 @@ public class BookingService {
         guestService.checkGuests(booking.getGuests());
 
         booking.getGuests().stream().forEach(guest -> guest.setId(UUID.randomUUID()));
-        storageService.schema.getBookings().add(booking);
+        StorageService.schema.getBookings().add(booking);
         // STORE IT!
-        storageService.storageManager.store(storageService.schema.getBookings());
+        StorageService.storageManager.store(StorageService.schema.getBookings());
         return booking;
     }
 

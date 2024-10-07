@@ -9,9 +9,9 @@ import java.util.List;
 public class Schema {
 
     // Our Domain Model
-    private List<Booking> bookings = new ArrayList<>();
     private List<Room> rooms = new ArrayList<>();
     private List<Guest> guests = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 
     // TODO implement some Domain related methods
 

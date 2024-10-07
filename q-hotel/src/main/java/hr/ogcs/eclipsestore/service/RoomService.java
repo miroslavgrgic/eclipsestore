@@ -12,21 +12,18 @@ import java.util.UUID;
 @Slf4j
 public class RoomService {
 
-    private StorageService storageService;
-
-    public RoomService(StorageService storageService) {
-        this.storageService = storageService;
-    }
-
     public List<Room> getAllRooms() {
-        return storageService.schema.getRooms();
+        return StorageService.schema.getRooms();
     }
 
     public Room createRoom(Room room) {
-        room.setId(UUID.randomUUID());
-        storageService.schema.getRooms().add(room);
+        if (room.getId() == null) {
+            room.setId(UUID.randomUUID());
+        }
+        StorageService.schema.getRooms().add(room);
         // STORE IT!
-        storageService.storageManager.store(storageService.schema.getRooms());
+        StorageService.storageManager.store(StorageService.schema.getRooms());
         return room;
     }
+
 }
