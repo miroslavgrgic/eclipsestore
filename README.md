@@ -9,3 +9,6 @@ Using Quarkus framework for building a backend service.
 
 ## sb-hotel
 Using SpringBoot framework for building a backend service.
+
+## Class Diagram
+![](class-diagram.drawio.png)

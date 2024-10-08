@@ -23,9 +23,12 @@ public class Room {
 
     private boolean canBeUsedWithHandicaps;
 
-//    private Set<Object, Integer> combinations = Set.of(
-//
-//    );
+    @Builder.Default
+    private Map<Integer, String> combinations = Map.of(
+        1, "use case 1",
+        2, "use case 2",
+        3, "use case 3"
+    );
 
     @Builder.Default
     private final List<String> bedSizes = new ArrayList<>(0);

@@ -52,4 +52,8 @@ public class GuestService {
         }
     }
 
+    public void createGuests(List<Guest> guests) {
+        storageService.schema.getGuests().addAll(guests);
+        storageService.storageManager.store(storageService.schema.getGuests());
+    }
 }
