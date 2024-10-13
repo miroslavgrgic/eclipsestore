@@ -21,7 +21,10 @@ public class Schema {
     }
 
     public boolean isHandicapFriendlyHotel() {
-        return rooms.stream().filter(room -> room.isCanBeUsedWithHandicaps()).toList().size() > 2;
+        return rooms.stream()
+                .filter(room -> room.isCanBeUsedWithHandicaps())
+                .toList()
+                .size() > 2;
     }
 
     // TODO implement some more Domain related methods
