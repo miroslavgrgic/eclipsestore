@@ -53,6 +53,7 @@ public class BookingService {
         } else {
             booking.getGuests().stream().forEach(guest -> {
                 guest.setId(UUID.randomUUID());
+                // STORING the new guest in its domain
                 guestService.createGuest(guest);
             });
         }

@@ -15,6 +15,7 @@ public class Schema {
     // Still Domain model, but enriching by technical key for easier access
     private Map<UUID, FooBar> fooBars = new HashMap<>();
 
+    // Domain related validations
     public boolean isBookingValid(Booking booking) {
         return !booking.getGuests().isEmpty();
     }
@@ -23,6 +24,6 @@ public class Schema {
         return rooms.stream().filter(room -> room.isCanBeUsedWithHandicaps()).toList().size() > 2;
     }
 
-    // TODO implement some Domain related methods
+    // TODO implement some more Domain related methods
 
 }
