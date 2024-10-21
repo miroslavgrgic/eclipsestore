@@ -65,6 +65,9 @@ public class BookingService {
         storageService.store(storageService.schema.getBookings());
         log.info("Created booking: {}", booking);
 
+        // SEND IT TO CONSUMER SERVICE
+        // TODO serialize Booking using EclipseSerializer to send it to the Consumer Service
+
         return booking;
     }
 
