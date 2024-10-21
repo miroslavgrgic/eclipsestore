@@ -5,6 +5,8 @@ import hr.ogcs.eclipsestore.hotel.model.Guest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import org.eclipse.serializer.Serializer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -67,6 +69,9 @@ public class BookingService {
 
         // SEND IT TO CONSUMER SERVICE
         // TODO serialize Booking using EclipseSerializer to send it to the Consumer Service
+
+        Serializer<byte[]> serializer = Serializer.Bytes();
+        byte[] data = serializer.serialize(booking);
 
         return booking;
     }

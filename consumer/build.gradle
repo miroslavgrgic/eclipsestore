@@ -21,7 +21,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-    implementation 'org.eclipse.serializer:base:2.0.0'
+    implementation 'org.eclipse.serializer:serializer:2.0.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
