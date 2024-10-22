@@ -3,9 +3,10 @@ package hr.ogcs.eclipsestore.hotel.service;
 import hr.ogcs.eclipsestore.hotel.model.Booking;
 import hr.ogcs.eclipsestore.hotel.model.Guest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import org.eclipse.serializer.Serializer;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,11 @@ public class BookingService {
         // SEND IT TO CONSUMER SERVICE
         // TODO serialize Booking using EclipseSerializer to send it to the Consumer Service
 
-        Serializer<byte[]> serializer = Serializer.Bytes();
-        byte[] data = serializer.serialize(booking);
+        RestClient restClient = RestClient.create();
 
+        Booking result = restClient.post().uri("localhost:8081").contentType(MediaType.valueOf("application/java")).body(booking).accept(MediaType.valueOf("application/java")).retrieve().body(Booking.class);
+
+        System.out.println("iiiideeemmmmooooo " + result.toString());
         return booking;
     }
 

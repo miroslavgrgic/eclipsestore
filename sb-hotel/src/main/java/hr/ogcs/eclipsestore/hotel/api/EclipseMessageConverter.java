@@ -1,6 +1,6 @@
-package hr.ogcs.eclipsestore.consumer.api;
+package hr.ogcs.eclipsestore.hotel.api;
 
-import hr.ogcs.eclipsestore.consumer.model.Booking;
+import hr.ogcs.eclipsestore.hotel.model.Booking;
 import org.eclipse.serializer.Serializer;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
