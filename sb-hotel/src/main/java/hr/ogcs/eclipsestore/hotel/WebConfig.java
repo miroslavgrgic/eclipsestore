@@ -1,6 +1,5 @@
 package hr.ogcs.eclipsestore.hotel;
 
-
 import hr.ogcs.eclipsestore.hotel.api.EclipseMessageConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -18,5 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new EclipseMessageConverter());
         converters.add(new MappingJackson2HttpMessageConverter());
+
+
     }
 }

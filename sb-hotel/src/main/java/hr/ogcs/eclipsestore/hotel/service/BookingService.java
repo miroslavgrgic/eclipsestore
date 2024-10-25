@@ -3,6 +3,8 @@ package hr.ogcs.eclipsestore.hotel.service;
 import hr.ogcs.eclipsestore.hotel.model.Booking;
 import hr.ogcs.eclipsestore.hotel.model.Guest;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.serializer.Serializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,9 @@ public class BookingService {
     private StorageService storageService;
     private GuestService guestService;
     private RoomService roomService;
+
+    @Value("${app.config.consumer-service.endpoint}")
+    private String consumerEndpoint;
 
     public BookingService(StorageService storageService, GuestService guestService, RoomService roomService) {
         this.storageService = storageService;
@@ -72,10 +77,15 @@ public class BookingService {
         // TODO serialize Booking using EclipseSerializer to send it to the Consumer Service
 
         RestClient restClient = RestClient.create();
+        Serializer<byte[]> serializer = Serializer.Bytes();
+        byte[] data = serializer.serialize(booking);
 
-        Booking result = restClient.post().uri("localhost:8081").contentType(MediaType.valueOf("application/java")).body(booking).accept(MediaType.valueOf("application/java")).retrieve().body(Booking.class);
+        Serializer<byte[]> serializertest2 = Serializer.Bytes();
+        Booking test = serializertest2.deserialize(data);
+        log.info("booking service test deserialize {}", test);
 
-        System.out.println("iiiideeemmmmooooo " + result.toString());
+        Booking result = restClient.post().uri(consumerEndpoint).body(data).contentType(new MediaType("application", "java")).accept(new MediaType("application", "java")).retrieve().body(Booking.class);
+
         return booking;
     }
 

@@ -11,8 +11,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class ConsumerController {
 
-    @PostMapping(consumes = "application/java")
-    public ResponseEntity receiverBooking(Booking booking) {
+    @PostMapping(consumes = "application/java", produces = "application/java")
+    public ResponseEntity receiverBooking(@RequestBody Booking booking) {
         System.out.println("Got it!" + booking.toString());
         return ResponseEntity.accepted().build();
     }

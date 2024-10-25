@@ -5,46 +5,46 @@ import org.eclipse.serializer.Serializer;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import java.io.IOException;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
-public class EclipseMessageConverter implements HttpMessageConverter<Booking> {
-    @Override
-    public boolean canRead(Class<?> clazz, MediaType mediaType) {
-        return true;
+public class EclipseMessageConverter extends AbstractHttpMessageConverter<Booking> {
+
+    public EclipseMessageConverter() {
+        super(new MediaType("application", "java", StandardCharsets.UTF_8));
     }
 
     @Override
-    public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        return true;
+    protected boolean supports(Class<?> clazz) {
+        System.out.println("clazzzzzzzzzz je " + clazz);
+        System.out.println("booking.class is assignable from " + Booking.class.isAssignableFrom(clazz));
+        return Booking.class.isAssignableFrom(clazz);
     }
 
     @Override
-    public List<MediaType> getSupportedMediaTypes() {
-        return List.of(MediaType.valueOf("application/java"));
-    }
-
-    @Override
-    public List<MediaType> getSupportedMediaTypes(Class<?> clazz) {
-        return HttpMessageConverter.super.getSupportedMediaTypes(clazz);
-    }
-
-    @Override
-    public Booking read(Class<? extends Booking> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    protected Booking readInternal(Class<? extends Booking> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+        byte[] body = inputMessage.getBody().readAllBytes();
+        System.out.println("Received body internal (raw bytes): " + Arrays.toString(body));
         Serializer<byte[]> serializer = Serializer.Bytes();
-        return serializer.deserialize(inputMessage.getBody().readAllBytes());
+        Booking test = serializer.deserialize(body);
+        System.out.println("Deserialized internal object consumer: " + test);
+
+        return test;
     }
 
     @Override
-    public void write(Booking booking, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-
+    protected void writeInternal(Booking booking, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+        System.out.println("write internal....................");
+        System.out.println("output message header " + outputMessage.getHeaders().getContentType());
+        outputMessage.getHeaders().setContentType(new MediaType("application", "java", StandardCharsets.UTF_8));
+        System.out.println("output message header " + outputMessage.getHeaders().getContentType());
         Serializer<byte[]> serializer = Serializer.Bytes();
         byte[] data = serializer.serialize(booking);
-        outputMessage.getHeaders().setContentType(MediaType.valueOf("application/java"));
         outputMessage.getBody().write(data);
     }
 }
