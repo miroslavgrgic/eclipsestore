@@ -2,8 +2,12 @@ package hr.ogcs.eclipsestore.hotel.service;
 
 import hr.ogcs.eclipsestore.hotel.model.Booking;
 import hr.ogcs.eclipsestore.hotel.model.Guest;
+import hr.ogcs.eclipsestore.hotel.model.Room;
+import hr.ogcs.eclipsestore.hotel.model.Schema;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.serializer.Serializer;
+import org.eclipse.serializer.SerializerFoundation;
+import org.eclipse.serializer.TypedSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -38,11 +42,11 @@ public class BookingService {
 
     public Booking createBooking(Booking booking) {
         // check if room exists
-        roomService.findById(booking.getRoom().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
+//        roomService.findById(booking.getRoom().getId())
+//                .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
 
         if (booking.getRoom().maxNumberOfGuests() < booking.getGuests().size()) {
-            throw new IllegalArgumentException("Too many guests for this room");
+            //throw new IllegalArgumentException("Too many guests for this room");
         }
 
         // check if guest already exists
@@ -76,15 +80,30 @@ public class BookingService {
         // SEND IT TO CONSUMER SERVICE
         // TODO serialize Booking using EclipseSerializer to send it to the Consumer Service
 
-        RestClient restClient = RestClient.create();
-        Serializer<byte[]> serializer = Serializer.Bytes();
-        byte[] data = serializer.serialize(booking);
+        final SerializerFoundation<?> foundation = SerializerFoundation.New()
+                .registerEntityTypes(Schema.class);
 
-        Serializer<byte[]> serializertest2 = Serializer.Bytes();
-        Booking test = serializertest2.deserialize(data);
-        log.info("booking service test deserialize {}", test);
+        Serializer<byte[]> serializer = Serializer.Bytes(foundation);
+        final String typeDictionaryString = serializer.exportTypeDictionay();
 
-        Booking result = restClient.post().uri(consumerEndpoint).body(data).contentType(new MediaType("application", "java")).accept(new MediaType("application", "java")).retrieve().body(Booking.class);
+        System.out.println("---");
+        System.out.println(typeDictionaryString);
+        System.out.println("---");
+
+        //final SerializerFoundation<?> foundation = SerializerFoundation.New(typeDictionaryString);
+        Serializer<byte[]> typedSerializer = TypedSerializer.Bytes(foundation);
+        byte[] data = typedSerializer.serialize(booking);
+
+        var result = RestClient.create().post().uri(consumerEndpoint)
+                .body(data)
+                .contentType(new MediaType("application", "java"))
+                .accept(new MediaType("application", "java"))
+                .retrieve()
+                .body(String.class);
+
+        Booking response = typedSerializer.deserialize(null);
+
+        log.info(result.toString());
 
         return booking;
     }

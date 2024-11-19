@@ -12,12 +12,15 @@ import java.util.UUID;
 @Slf4j
 public class RoomService {
 
+    // member
     private StorageService storageService;
 
+    // constructor
     public RoomService(StorageService storageService) {
         this.storageService = storageService;
     }
 
+    // methods
     public List<Room> getAllRooms() {
         return storageService.schema.getRooms();
     }

@@ -1,6 +1,6 @@
 package hr.ogcs.eclipsestore.consumer.api;
 
-import hr.ogcs.eclipsestore.consumer.model.Booking;
+import hr.ogcs.eclipsestore.hotel.model.Booking;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
