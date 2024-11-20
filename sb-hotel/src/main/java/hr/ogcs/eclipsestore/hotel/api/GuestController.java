@@ -53,6 +53,13 @@ public class GuestController {
         return ResponseEntity.accepted().build();
     }
 
+    // It is not a valid REST endpoint -  just using for sending a Guest object to an external system
+    @GetMapping(path = "/machine2machine")
+    public ResponseEntity sendGuest() {
+        boolean succeded = guestService.sendGuest();
+        return ResponseEntity.ok(succeded);
+    }
+
     // It is not a valid REST endpoint -  just using for creating load on EclipseStore
     @PostMapping(path = "/bamm")
     public ResponseEntity<Guest> createGuests() {

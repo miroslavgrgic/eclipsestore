@@ -42,11 +42,11 @@ public class BookingService {
 
     public Booking createBooking(Booking booking) {
         // check if room exists
-//        roomService.findById(booking.getRoom().getId())
-//                .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
+        roomService.findById(booking.getRoom().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
 
         if (booking.getRoom().maxNumberOfGuests() < booking.getGuests().size()) {
-            //throw new IllegalArgumentException("Too many guests for this room");
+            throw new IllegalArgumentException("Too many guests for this room");
         }
 
         // check if guest already exists
@@ -77,21 +77,11 @@ public class BookingService {
         storageService.store(storageService.schema.getBookings());
         log.info("Created booking: {}", booking);
 
-        // SEND IT TO CONSUMER SERVICE
-        // TODO serialize Booking using EclipseSerializer to send it to the Consumer Service
-
+        // serialize Booking using EclipseSerializer to send it to the Consumer Service
         final SerializerFoundation<?> foundation = SerializerFoundation.New()
                 .registerEntityTypes(Schema.class);
-
-        Serializer<byte[]> serializer = Serializer.Bytes(foundation);
-        final String typeDictionaryString = serializer.exportTypeDictionay();
-
-        System.out.println("---");
-        System.out.println(typeDictionaryString);
-        System.out.println("---");
-
-        //final SerializerFoundation<?> foundation = SerializerFoundation.New(typeDictionaryString);
         Serializer<byte[]> typedSerializer = TypedSerializer.Bytes(foundation);
+
         byte[] data = typedSerializer.serialize(booking);
 
         var result = RestClient.create().post().uri(consumerEndpoint)
@@ -101,9 +91,8 @@ public class BookingService {
                 .retrieve()
                 .body(String.class);
 
-        Booking response = typedSerializer.deserialize(null);
-
-        log.info(result.toString());
+        // TODO deserialize again
+        log.info(result);
 
         return booking;
     }

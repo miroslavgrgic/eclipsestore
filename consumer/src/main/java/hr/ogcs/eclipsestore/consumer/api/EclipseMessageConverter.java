@@ -1,10 +1,9 @@
 package hr.ogcs.eclipsestore.consumer.api;
 
-import hr.ogcs.eclipsestore.hotel.model.Booking;
+import hr.ogcs.eclipsestore.hotel.model.Schema;
 import org.eclipse.serializer.Serializer;
 import org.eclipse.serializer.SerializerFoundation;
 import org.eclipse.serializer.TypedSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -14,14 +13,10 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class EclipseMessageConverter extends AbstractHttpMessageConverter<Booking> {
+public class EclipseMessageConverter extends AbstractHttpMessageConverter<Schema> {
 
     public EclipseMessageConverter() {
         super(new MediaType("application", "java", StandardCharsets.UTF_8));
@@ -29,11 +24,12 @@ public class EclipseMessageConverter extends AbstractHttpMessageConverter<Bookin
 
     @Override
     protected boolean supports(Class<?> clazz) {
-        return Booking.class.isAssignableFrom(clazz);
+        // FIXME implement check for valid classes
+        return Schema.class.isAssignableFrom(clazz) || true;
     }
 
     @Override
-    protected Booking readInternal(Class<? extends Booking> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    protected Schema readInternal(Class<? extends Schema> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 
         // fetch Dictionary from sb-hotel-service
         RestTemplate restTemplate = new RestTemplate();
@@ -50,10 +46,10 @@ public class EclipseMessageConverter extends AbstractHttpMessageConverter<Bookin
     }
 
     @Override
-    protected void writeInternal(Booking booking, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+    protected void writeInternal(Schema schema, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         outputMessage.getHeaders().setContentType(new MediaType("application", "java", StandardCharsets.UTF_8));
         Serializer<byte[]> serializer = Serializer.Bytes();
-        byte[] data = serializer.serialize(booking);
+        byte[] data = serializer.serialize(schema);
         outputMessage.getBody().write(data);
     }
 
