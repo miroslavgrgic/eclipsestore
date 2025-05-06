@@ -1,7 +1,7 @@
 package hr.ogcs.eclipsestore.hotel.service;
 
-import hr.ogcs.eclipsestore.hotel.model.Booking;
-import hr.ogcs.eclipsestore.hotel.model.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class BookingService {
     }
 
     public List<Booking> getAllBookings() {
-        return storageService.schema.getBookings();
+        return storageService.hotel.getBookings();
     }
 
     public Booking createBooking(Booking booking) {
@@ -59,25 +59,25 @@ public class BookingService {
         }
 
         booking.setId(UUID.randomUUID());
-        storageService.schema.getBookings().add(booking);
+        storageService.hotel.getBookings().add(booking);
 
         // STORE IT!
-        storageService.store(storageService.schema.getBookings());
+        storageService.store(storageService.hotel.getBookings());
         log.info("Created booking: {}", booking);
 
         return booking;
     }
 
     public void deleteBookingByID(String bookingID) {
-        Optional<Booking> booking = storageService.schema.getBookings().stream()
+        Optional<Booking> booking = storageService.hotel.getBookings().stream()
                 .filter(item -> item.getId().toString().equals(bookingID))
                 .findFirst();
 
         if (booking.isEmpty()) {
             throw new IllegalArgumentException("Trying to delete entry that does not exist!");
         } else {
-            storageService.schema.getBookings().remove(booking.get());
-            storageService.storageManager.store(storageService.schema.getBookings());
+            storageService.hotel.getBookings().remove(booking.get());
+            storageService.storageManager.store(storageService.hotel.getBookings());
             log.info("Deleted Booking with ID {}", bookingID);
         }
     }

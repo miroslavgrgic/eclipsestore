@@ -1,8 +1,9 @@
-package hr.ogcs.eclipsestore.hotel.model;
+package hr.ogcs.eclipsestore.hotel.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.room.Room;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -19,23 +20,16 @@ class BookingTest {
     @Test
     void should_create_booking_for_2_guests_in_room_gloria() {
         booking = Booking.builder()
-                .date(LocalDate.now().plusDays(2))
+                .from(LocalDate.now().plusDays(2))
+                .to(LocalDate.now().plusDays(7))
                 .room(createGloria())
                 .guests(createGuests())
                 .build();
 
         assertEquals(2, booking.getGuests().size());
         assertEquals(2, booking.getRoom().maxNumberOfGuests());
-        assertTrue(booking.getRoom().isCanBeUsedWithHandicaps());
+        assertTrue(booking.getRoom().canBeUsedWithHandicaps());
         assertEquals(BigDecimal.valueOf(100.00), booking.getRoom().getPrice());
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        try {
-            System.out.println(objectMapper.writeValueAsString(booking));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private Room createGloria() {

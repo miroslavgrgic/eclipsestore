@@ -1,5 +1,7 @@
-package hr.ogcs.eclipsestore.hotel.model;
+package hr.ogcs.eclipsestore.hotel.domain.booking;
 
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.room.Room;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +24,7 @@ public class Booking {
 
     private Room room;
 
-    private LocalDate date;
+    private LocalDate from;
+    private LocalDate to;
 
 }

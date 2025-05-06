@@ -1,12 +1,11 @@
 package hr.ogcs.eclipsestore.hotel.service;
 
-import hr.ogcs.eclipsestore.hotel.model.Address;
-import hr.ogcs.eclipsestore.hotel.model.Booking;
-import hr.ogcs.eclipsestore.hotel.model.Guest;
-import hr.ogcs.eclipsestore.hotel.model.Room;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.room.Room;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -14,6 +13,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookingIntegrationTest {
 
@@ -23,7 +24,7 @@ class BookingIntegrationTest {
 
     @BeforeAll
     static void setup() {
-        var storageService = new StorageService("test");
+        var storageService = new StorageService("integration-test");
         roomService = new RoomService(storageService);
         guestService = new GuestService(storageService);
         bookingService = new BookingService(storageService, guestService, roomService);
@@ -33,13 +34,14 @@ class BookingIntegrationTest {
     void should_fail_booking_when_room_does_not_exist() {
         IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             bookingService.createBooking(Booking.builder()
-                            .date(LocalDate.now())
+                            .from(LocalDate.now())
+                            .to(LocalDate.now().plusDays(5))
+                            // this UUID provokes the exception
                             .room(Room.builder().id(UUID.randomUUID()).build())
                             .guests(List.of(Guest.builder().firstName("Max").lastName("Mustermann").build()))
                             .build());
         });
-        Assertions.assertTrue(thrown.getMessage().contains("Room with ID "));
-        Assertions.assertTrue(thrown.getMessage().contains(" does not exist"));
+        assertTrue(thrown.getMessage().matches("Room with ID .* does not exist"));
     }
 
     @Test
@@ -74,7 +76,7 @@ class BookingIntegrationTest {
         var result = bookingService.createBooking(Booking.builder()
                 .room(room)
                 .guests(guests)
-                .date(LocalDate.now())
+                .from(LocalDate.now())
                 .build());
 
         // then

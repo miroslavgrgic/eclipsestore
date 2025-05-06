@@ -1,6 +1,7 @@
-package hr.ogcs.eclipsestore.hotel.model;
+package hr.ogcs.eclipsestore.hotel.domain.room;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ public class Room {
     private BigDecimal price;
 
     private int sqm;
-
+    @Accessors(fluent = true)
     private boolean canBeUsedWithHandicaps;
 
     @Builder.Default

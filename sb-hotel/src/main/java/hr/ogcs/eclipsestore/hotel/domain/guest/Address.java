@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.model;
+package hr.ogcs.eclipsestore.hotel.domain.guest;
 
 import lombok.Builder;
 import lombok.Getter;

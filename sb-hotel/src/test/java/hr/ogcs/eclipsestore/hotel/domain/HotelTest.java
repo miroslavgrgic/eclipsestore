@@ -1,5 +1,9 @@
-package hr.ogcs.eclipsestore.hotel.model;
+package hr.ogcs.eclipsestore.hotel.domain;
 
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.room.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,33 +13,38 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SchemaTest {
+class HotelTest {
 
-    private Schema schema;
+    private Hotel hotel;
 
     @BeforeEach
     void setUp() {
-        schema = new Schema();
+        hotel = new Hotel("Mianmare", true);
+    }
+
+    @Test
+    void should_return_that_hotel_is_accepting_credit_cards() {
+        assertTrue(hotel.acceptsCreditCards());
     }
 
     @Test
     void should_return_that_booking_is_valid() {
         Booking booking = Booking.builder()
-                .date(LocalDate.now().plusDays(2))
+                .from(LocalDate.now().plusDays(2))
                 .room(createRoom("Gloria"))
                 .guests(createGuests())
                 .build();
 
-        assertTrue(schema.isBookingValid(booking));
+        assertTrue(hotel.isBookingValid(booking));
     }
 
     @Test
     void should_return_that_hotel_is_not_handicap_friendly() {
-        schema.getRooms().add(createRoom("Gloria"));
-        schema.getRooms().add(createRoom("Fauna"));
-        schema.getRooms().add(createRoom("Victoria"));
+        hotel.getRooms().add(createRoom("Gloria"));
+        hotel.getRooms().add(createRoom("Fauna"));
+        hotel.getRooms().add(createRoom("Victoria"));
 
-        assertTrue(schema.isHandicapFriendlyHotel());
+        assertTrue(hotel.isHandicapFriendlyHotel());
     }
 
     private Room createRoom(String name) {
