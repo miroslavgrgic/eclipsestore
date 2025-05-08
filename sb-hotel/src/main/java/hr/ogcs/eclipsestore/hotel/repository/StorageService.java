@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.service;
+package hr.ogcs.eclipsestore.hotel.repository;
 
 import hr.ogcs.eclipsestore.hotel.domain.Hotel;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,8 @@ import java.nio.file.Paths;
 @Slf4j
 public class StorageService {
 
-    protected final Hotel hotel;
-    protected final EmbeddedStorageManager storageManager;
+    public final Hotel hotel;
+    public final EmbeddedStorageManager storageManager;
 
     public StorageService(@Value("${eclipsestore.path}") String path) {
         this.hotel = new Hotel("Hotel Sonne", true);
@@ -23,7 +23,7 @@ public class StorageService {
         log.info("StorageManager and Schema successfully initiated in path: {}", path);
     }
 
-    protected void store(Object obj) {
+    public void store(Object obj) {
         storageManager.store(obj);
     }
 

@@ -1,6 +1,5 @@
-package hr.ogcs.eclipsestore.hotel.domain;
+package hr.ogcs.eclipsestore.hotel.domain.room;
 
-import hr.ogcs.eclipsestore.hotel.domain.room.Room;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

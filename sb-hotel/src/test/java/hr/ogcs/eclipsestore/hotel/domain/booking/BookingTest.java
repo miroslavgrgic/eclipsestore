@@ -1,6 +1,5 @@
-package hr.ogcs.eclipsestore.hotel.domain;
+package hr.ogcs.eclipsestore.hotel.domain.booking;
 
-import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;

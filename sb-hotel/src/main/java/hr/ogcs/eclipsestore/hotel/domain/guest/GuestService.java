@@ -1,6 +1,6 @@
-package hr.ogcs.eclipsestore.hotel.service;
+package hr.ogcs.eclipsestore.hotel.domain.guest;
 
-import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.repository.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Slf4j
 public class GuestService {
 
-    private StorageService storageService;
+    private final StorageService storageService;
 
     public GuestService(StorageService storageService) {
         this.storageService = storageService;
@@ -30,6 +30,12 @@ public class GuestService {
         storageService.hotel.getGuests().add(guest);
         storageService.store(storageService.hotel.getGuests());
         return guest;
+    }
+
+    public Optional<Guest> findById(UUID id) {
+        return storageService.hotel.getGuests().stream()
+                .filter(guest -> guest.getId().equals(id))
+                .findFirst();
     }
 
     public Optional<Guest> findByLastname(String lastName) {
@@ -56,4 +62,5 @@ public class GuestService {
         storageService.hotel.getGuests().addAll(guests);
         storageService.storageManager.store(storageService.hotel.getGuests());
     }
+
 }

@@ -1,7 +1,7 @@
 package hr.ogcs.eclipsestore.hotel.api;
 
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
-import hr.ogcs.eclipsestore.hotel.service.GuestService;
+import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

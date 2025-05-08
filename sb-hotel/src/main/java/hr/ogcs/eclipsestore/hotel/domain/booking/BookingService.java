@@ -1,7 +1,8 @@
-package hr.ogcs.eclipsestore.hotel.service;
+package hr.ogcs.eclipsestore.hotel.domain.booking;
 
-import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.room.RoomService;
+import hr.ogcs.eclipsestore.hotel.repository.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,13 @@ import java.util.UUID;
 @Slf4j
 public class BookingService {
 
-    private StorageService storageService;
-    private GuestService guestService;
-    private RoomService roomService;
+    private final StorageService storageService;
+    private final GuestAdapter guestAdapter;
+    private final RoomService roomService;
 
-    public BookingService(StorageService storageService, GuestService guestService, RoomService roomService) {
+    public BookingService(StorageService storageService, GuestAdapter guestAdapter, RoomService roomService) {
         this.storageService = storageService;
-        this.guestService = guestService;
+        this.guestAdapter = guestAdapter;
         this.roomService = roomService;
     }
 
@@ -42,7 +43,7 @@ public class BookingService {
         booking.getGuests().stream().forEach(
                 guest -> {
                     // TODO last name is not enough - an dedicated equals could handle it
-                    guestService.findByLastname(guest.getLastName())
+                    guestAdapter.findByLastname(guest.getLastName())
                         .ifPresent(g -> potentialNewGuests.add(g));
                 }
         );
@@ -54,7 +55,7 @@ public class BookingService {
             booking.getGuests().stream().forEach(guest -> {
                 guest.setId(UUID.randomUUID());
                 // STORING the new guest in its domain
-                guestService.createGuest(guest);
+                guestAdapter.createGuest(guest);
             });
         }
 
@@ -68,13 +69,13 @@ public class BookingService {
         return booking;
     }
 
-    public void deleteBookingByID(String bookingID) {
+    public void deleteBookingByID(UUID bookingID) {
         Optional<Booking> booking = storageService.hotel.getBookings().stream()
-                .filter(item -> item.getId().toString().equals(bookingID))
+                .filter(item -> item.getId().equals(bookingID))
                 .findFirst();
 
         if (booking.isEmpty()) {
-            throw new IllegalArgumentException("Trying to delete entry that does not exist!");
+            throw new IllegalArgumentException("Trying to delete Booking " + bookingID + " that does not exist!");
         } else {
             storageService.hotel.getBookings().remove(booking.get());
             storageService.storageManager.store(storageService.hotel.getBookings());

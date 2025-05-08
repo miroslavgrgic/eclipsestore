@@ -1,6 +1,6 @@
-package hr.ogcs.eclipsestore.hotel.service;
+package hr.ogcs.eclipsestore.hotel.domain.room;
 
-import hr.ogcs.eclipsestore.hotel.domain.room.Room;
+import hr.ogcs.eclipsestore.hotel.repository.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Slf4j
 public class RoomService {
 
-    private StorageService storageService;
+    private final StorageService storageService;
 
     public RoomService(StorageService storageService) {
         this.storageService = storageService;
@@ -27,16 +27,16 @@ public class RoomService {
             room.setId(UUID.randomUUID());
         }
 
-        // add to existing list
+        // add to existing rooms list
         storageService.hotel.getRooms().add(room);
-
+        // store the rooms list
         storageService.store(storageService.hotel.getRooms());
         return room;
     }
 
-    public void deleteRoomByID(String id) {
+    public void deleteRoomByID(UUID id) {
         Optional<Room> room = storageService.hotel.getRooms().stream()
-                .filter(item -> item.getId().toString().equals(id))
+                .filter(item -> item.getId().equals(id))
                 .findFirst();
 
         if (room.isEmpty()) {
@@ -52,6 +52,24 @@ public class RoomService {
         return storageService.hotel.getRooms().stream()
                 .filter(room -> room.getId().equals(id))
                 .findFirst();
+    }
+
+    public List<Room> findBySize(int minimumSqm) {
+        return storageService.hotel.getRooms().stream()
+                .filter(room -> room.getSqm() >= minimumSqm)
+                .toList();
+    }
+
+    public List<Room> findByPrice(int min, int max) {
+        return storageService.hotel.getRooms().stream()
+                .filter(room -> room.getPrice().intValue() >= min && room.getPrice().intValue() <= max)
+                .toList();
+    }
+
+    public List<Room> findByNumberOfGuest(int amount) {
+        return storageService.hotel.getRooms().stream()
+                .filter(room -> room.maxNumberOfGuests() > amount)
+                .toList();
     }
 
     public void extendBeds(Room room, int width, int length) {

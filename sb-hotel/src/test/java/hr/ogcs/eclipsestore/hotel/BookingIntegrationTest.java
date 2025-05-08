@@ -1,12 +1,18 @@
-package hr.ogcs.eclipsestore.hotel.service;
+package hr.ogcs.eclipsestore.hotel;
 
+import hr.ogcs.eclipsestore.hotel.domain.booking.BookingService;
+import hr.ogcs.eclipsestore.hotel.domain.booking.GuestAdapter;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
+import hr.ogcs.eclipsestore.hotel.domain.room.RoomService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,18 +22,21 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SpringBootTest
 class BookingIntegrationTest {
 
-    private static BookingService bookingService;
-    private static RoomService roomService;
-    private static GuestService guestService;
+    @Autowired BookingService bookingService;
+    @Autowired RoomService roomService;
+    @Autowired GuestAdapter guestAdapter;
+    @Autowired GuestService guestService;
 
     @BeforeAll
     static void setup() {
-        var storageService = new StorageService("integration-test");
-        roomService = new RoomService(storageService);
-        guestService = new GuestService(storageService);
-        bookingService = new BookingService(storageService, guestService, roomService);
+//        var storageService = new StorageService("integration-test");
+//        roomService = new RoomService(storageService);
+//        guestAdapter = new GuestAdapter();
+//        guestService = new GuestService(storageService);
+//        bookingService = new BookingService(storageService, guestAdapter, roomService);
     }
 
     @Test

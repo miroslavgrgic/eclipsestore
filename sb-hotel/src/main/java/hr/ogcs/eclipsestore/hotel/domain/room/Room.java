@@ -21,6 +21,7 @@ public class Room {
     private BigDecimal price;
 
     private int sqm;
+
     @Accessors(fluent = true)
     private boolean canBeUsedWithHandicaps;
 
