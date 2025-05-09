@@ -62,7 +62,7 @@ public class RoomService {
 
     public List<Room> findByPrice(int min, int max) {
         return storageService.hotel.getRooms().stream()
-                .filter(room -> room.getPrice().intValue() >= min && room.getPrice().intValue() <= max)
+                .filter(room -> room.getDefaultPrice().intValue() >= min && room.getDefaultPrice().intValue() <= max)
                 .toList();
     }
 

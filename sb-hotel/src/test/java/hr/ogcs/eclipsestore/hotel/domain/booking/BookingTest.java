@@ -28,13 +28,13 @@ class BookingTest {
         assertEquals(2, booking.getGuests().size());
         assertEquals(2, booking.getRoom().maxNumberOfGuests());
         assertTrue(booking.getRoom().canBeUsedWithHandicaps());
-        assertEquals(BigDecimal.valueOf(100.00), booking.getRoom().getPrice());
+        assertEquals(BigDecimal.valueOf(100.00), booking.getRoom().getDefaultPrice());
     }
 
     private Room createGloria() {
         return Room.builder()
                 .name("Gloria")
-                .price(BigDecimal.valueOf(100.00))
+                .defaultPrice(BigDecimal.valueOf(100.00))
                 .sqm(55)
                 .canBeUsedWithHandicaps(true)
                 .build();

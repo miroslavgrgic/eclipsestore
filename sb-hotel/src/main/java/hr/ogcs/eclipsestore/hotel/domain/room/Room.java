@@ -18,7 +18,7 @@ public class Room {
 
     private String name;
 
-    private BigDecimal price;
+    private BigDecimal defaultPrice;
 
     private int sqm;
 

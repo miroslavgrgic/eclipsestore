@@ -1,7 +1,6 @@
 package hr.ogcs.eclipsestore.hotel;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.BookingService;
-import hr.ogcs.eclipsestore.hotel.domain.booking.GuestAdapter;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
@@ -58,7 +57,7 @@ class BookingIntegrationTest {
                 .bedSizes(List.of("90 x 200"))
                 .state(Room.State.FREE)
                 .availableSince(LocalDate.now().minusYears(1))
-                .price(BigDecimal.valueOf(100))
+                .defaultPrice(BigDecimal.valueOf(100))
                 .build());
 
         var guest = Guest.builder()

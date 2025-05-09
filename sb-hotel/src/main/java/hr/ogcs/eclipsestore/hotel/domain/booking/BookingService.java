@@ -44,12 +44,13 @@ public class BookingService {
         }
 
         // check if guest already exists
+        // TODO simplify code to be more conference compatible!
         List<Guest> potentialNewGuests = new ArrayList<>();
-        booking.getGuests().stream().forEach(
+        booking.getGuests().forEach(
                 guest -> {
                     // TODO last name is not enough - an dedicated equals could handle it
                     guestAdapter.findByLastname(guest.getLastName())
-                        .ifPresent(g -> potentialNewGuests.add(g));
+                        .ifPresent(potentialNewGuests::add);
                 }
         );
 
@@ -57,7 +58,7 @@ public class BookingService {
             booking.getGuests().removeAll(booking.getGuests());
             booking.getGuests().addAll(potentialNewGuests);
         } else {
-            booking.getGuests().stream().forEach(guest -> {
+            booking.getGuests().forEach(guest -> {
                 guest.setId(UUID.randomUUID());
                 // STORING the new guest in its domain
                 guestAdapter.createGuest(guest);
