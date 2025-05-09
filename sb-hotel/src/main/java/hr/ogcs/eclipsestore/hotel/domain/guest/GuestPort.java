@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public interface GuestPort {
 
-    Guest createGuest(Guest guest);
+    UUID createGuest(Guest guest);
     Optional<Guest> findById(UUID id);
     Optional<Guest> findByLastname(String lastName);
 

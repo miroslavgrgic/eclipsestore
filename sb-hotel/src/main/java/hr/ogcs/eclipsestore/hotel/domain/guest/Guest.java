@@ -31,4 +31,11 @@ public class Guest {
         return age < 13;
     }
 
+    public boolean hasValidData() {
+        return id != null && firstName != null && lastName != null && age > -1;
+    }
+
+    public String getFullName() {
+        return String.format("%s %s", firstName, lastName);
+    }
 }

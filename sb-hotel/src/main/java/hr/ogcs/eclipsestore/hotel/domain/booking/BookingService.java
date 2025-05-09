@@ -17,12 +17,12 @@ public class BookingService {
 
     private final StorageService storageService;
     private final GuestAdapter guestAdapter;
-    private final RoomService roomService;
+    private final RoomAdapter roomAdapter;
 
-    public BookingService(StorageService storageService, GuestAdapter guestAdapter, RoomService roomService) {
+    public BookingService(StorageService storageService, GuestAdapter guestAdapter, RoomAdapter roomAdapter) {
         this.storageService = storageService;
         this.guestAdapter = guestAdapter;
-        this.roomService = roomService;
+        this.roomAdapter = roomAdapter;
     }
 
     public List<Booking> getAllBookings() {
@@ -30,8 +30,13 @@ public class BookingService {
     }
 
     public Booking createBooking(Booking booking) {
+
+        if (! BookingRules.isBookingValid(booking)) {
+            throw new IllegalArgumentException("Booking is invalid");
+        }
+
         // check if room exists
-        var room = roomService.findById(booking.getRoom().getId())
+        var room = roomAdapter.findById(booking.getRoom().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
 
         if (room.maxNumberOfGuests() < booking.getGuests().size()) {

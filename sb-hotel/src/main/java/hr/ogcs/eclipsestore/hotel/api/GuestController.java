@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping(value = "/guests")
@@ -25,9 +26,9 @@ public class GuestController {
     }
 
     @PostMapping
-    public ResponseEntity<Guest> createGuest(@RequestBody Guest guest) {
+    public ResponseEntity<UUID> createGuest(@RequestBody Guest guest) {
         Guest newGuest = guestService.createGuest(guest);
-        return ResponseEntity.status(HttpStatus.OK).body(newGuest);
+        return ResponseEntity.status(HttpStatus.OK).body(newGuest.getId());
     }
 
     @GetMapping
@@ -48,7 +49,7 @@ public class GuestController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteGuest(@PathVariable(value = "id") String id) {
+    public ResponseEntity deleteGuest(@PathVariable(value = "id") UUID id) {
         guestService.deleteGuestByID(id);
         return ResponseEntity.accepted().build();
     }
@@ -56,20 +57,19 @@ public class GuestController {
     // It is not a valid REST endpoint -  just using for creating load on EclipseStore
     @PostMapping(path = "/bamm")
     public ResponseEntity<Guest> createGuests() {
-        for (int bulk = 0; bulk < 10; bulk++) {
+        IntStream.range(0, 10).boxed().forEach(bulk -> {
             List<Guest> guests = new ArrayList<>();
-            for (int i = 0; i < 100_000; i++) {
+            IntStream.range(0, 100_000).boxed().forEach(iter -> {
                 var guest = Guest.builder()
                         .firstName(UUID.randomUUID().toString())
                         .lastName(UUID.randomUUID().toString())
                         .age(new Random().nextInt(100))
                         .build();
                 guests.add(guest);
-            }
+            });
             guestService.createGuests(guests);
             log.info("Created 100.000 guests");
-        }
-
+        });
         return ResponseEntity.created(URI.create("/guests")).build();
     }
 

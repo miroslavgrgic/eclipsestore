@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class RoomPortImpl implements RoomPort {
+public final class RoomPortImpl implements RoomPort {
 
     @Autowired
     RoomService roomService;

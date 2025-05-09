@@ -5,6 +5,7 @@ import hr.ogcs.eclipsestore.hotel.domain.guest.GuestPort;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class GuestAdapter {
@@ -15,12 +16,12 @@ public class GuestAdapter {
         this.guestPort = guestPort;
     }
 
-    public Optional<Guest> findByLastname(String lastname) {
-        return guestPort.findByLastname(lastname);
+    public UUID createGuest(Guest guest) {
+        return guestPort.createGuest(guest);
     }
 
-    public Guest createGuest(Guest guest) {
-        return guestPort.createGuest(guest);
+    public Optional<Guest> findByLastname(String lastname) {
+        return guestPort.findByLastname(lastname);
     }
 
 }

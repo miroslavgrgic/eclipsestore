@@ -27,6 +27,10 @@ public class GuestService {
             guest.setId(UUID.randomUUID());
         }
 
+        if (!guest.hasValidData()) {
+            throw new IllegalArgumentException("Invalid guest");
+        }
+
         storageService.hotel.getGuests().add(guest);
         storageService.store(storageService.hotel.getGuests());
         return guest;
@@ -44,9 +48,9 @@ public class GuestService {
                 .findFirst();
     }
 
-    public void deleteGuestByID(String id) {
+    public void deleteGuestByID(UUID id) {
         Optional<Guest> guest = storageService.hotel.getGuests().stream()
-                .filter(item -> item.getId().toString().equals(id))
+                .filter(item -> item.getId().equals(id))
                 .findFirst();
 
         if (guest.isEmpty()) {

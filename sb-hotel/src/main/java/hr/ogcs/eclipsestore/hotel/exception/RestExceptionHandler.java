@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class RestExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity<Object> catchThemAllException(Exception e) {
+    public ResponseEntity<String> catchThemAllException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
     @ExceptionHandler(value = {IllegalArgumentException.class})
-    public ResponseEntity<Object> resourceNotFoundException(IllegalArgumentException e) {
+    public ResponseEntity<String> resourceNotFoundException(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 

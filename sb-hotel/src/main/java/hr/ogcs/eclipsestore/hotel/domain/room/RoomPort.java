@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface RoomPort {
+public sealed interface RoomPort permits RoomPortImpl {
 
     Optional<Room> findById(UUID id);
     List<Room> findBySize(int minimumSqm);

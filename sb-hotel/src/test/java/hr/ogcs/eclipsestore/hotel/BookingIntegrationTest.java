@@ -27,16 +27,10 @@ class BookingIntegrationTest {
 
     @Autowired BookingService bookingService;
     @Autowired RoomService roomService;
-    @Autowired GuestAdapter guestAdapter;
     @Autowired GuestService guestService;
 
     @BeforeAll
     static void setup() {
-//        var storageService = new StorageService("integration-test");
-//        roomService = new RoomService(storageService);
-//        guestAdapter = new GuestAdapter();
-//        guestService = new GuestService(storageService);
-//        bookingService = new BookingService(storageService, guestAdapter, roomService);
     }
 
     @Test
@@ -86,6 +80,7 @@ class BookingIntegrationTest {
                 .room(room)
                 .guests(guests)
                 .from(LocalDate.now())
+                .to(LocalDate.now().plusDays(5))
                 .build());
 
         // then
