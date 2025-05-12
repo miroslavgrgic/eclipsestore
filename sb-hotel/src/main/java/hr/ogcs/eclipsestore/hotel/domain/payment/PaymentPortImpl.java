@@ -1,19 +1,26 @@
 package hr.ogcs.eclipsestore.hotel.domain.payment;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
-import hr.ogcs.eclipsestore.hotel.domain.pricing.Price;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class PaymentPortImpl implements PaymentPort {
+
+    @Autowired
+    PaymentEventPublisher paymentEventPublisher;
+
     @Override
-    public void processPayment(Booking booking, Price price) {
-        if (price.getPrice().compareTo(booking.getRoom().getDefaultPrice()) > 0) {
-            // TODO write here sth for the conference
-        }
+    public void processPayment(Booking booking) {
+        callPaymentProvider(booking);
+        paymentEventPublisher.publishPaymentEvent(booking);
     }
 
     private void callPaymentProvider(Booking booking) {
-        // TODO implement
+        // TODO implement some PaymentAdapter
+        log.info("Called payment provider for Booking {}", booking);
     }
+
 }

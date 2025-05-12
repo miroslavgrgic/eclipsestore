@@ -13,8 +13,8 @@ public class GuestPortImpl implements GuestPort {
     GuestService guestService;
 
     @Override
-    public UUID createGuest(Guest guest) {
-        return guestService.createGuest(guest).getId();
+    public Guest createGuest(Guest guest) {
+        return guestService.createGuest(guest);
     }
 
     @Override

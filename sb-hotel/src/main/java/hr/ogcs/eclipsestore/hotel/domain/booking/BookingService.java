@@ -1,12 +1,9 @@
 package hr.ogcs.eclipsestore.hotel.domain.booking;
 
-import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
-import hr.ogcs.eclipsestore.hotel.domain.room.RoomService;
 import hr.ogcs.eclipsestore.hotel.repository.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,62 +13,64 @@ import java.util.UUID;
 public class BookingService {
 
     private final StorageService storageService;
+
     private final GuestAdapter guestAdapter;
     private final RoomAdapter roomAdapter;
+    private final PricingAdapter pricingAdapter;
+    private final PaymentAdapter paymentAdapter;
 
-    public BookingService(StorageService storageService, GuestAdapter guestAdapter, RoomAdapter roomAdapter) {
+    private final BookingEventPublisher bookingEventPublisher;
+
+    public BookingService(StorageService storageService, GuestAdapter guestAdapter, RoomAdapter roomAdapter, PricingAdapter pricingAdapter, PaymentAdapter paymentAdapter, BookingEventPublisher bookingEventPublisher) {
         this.storageService = storageService;
         this.guestAdapter = guestAdapter;
         this.roomAdapter = roomAdapter;
+        this.pricingAdapter = pricingAdapter;
+        this.paymentAdapter = paymentAdapter;
+        this.bookingEventPublisher = bookingEventPublisher;
     }
 
     public List<Booking> getAllBookings() {
         return storageService.hotel.getBookings();
     }
 
-    public Booking createBooking(Booking booking) {
+    public Optional<Booking> getBooking(UUID id) {
+        return storageService.hotel.getBookings().stream().filter(booking -> booking.getId().equals(id)).findFirst();
+    }
 
+    public Booking createBooking(Booking booking) {
+        // validate booking
         if (! BookingRules.isBookingValid(booking)) {
             throw new IllegalArgumentException("Booking is invalid");
         }
 
+        // check if guest exists
+        var guests = guestAdapter.find(booking.getGuests());
+
         // check if room exists
         var room = roomAdapter.findById(booking.getRoom().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Room with ID " + booking.getRoom().getId() + " does not exist"));
-
+        // and its capacity
         if (room.maxNumberOfGuests() < booking.getGuests().size()) {
             throw new IllegalArgumentException("Too many guests for this room");
         }
 
-        // check if guest already exists
-        // TODO simplify code to be more conference compatible!
-        List<Guest> potentialNewGuests = new ArrayList<>();
-        booking.getGuests().forEach(
-                guest -> {
-                    // TODO last name is not enough - an dedicated equals could handle it
-                    guestAdapter.findByLastname(guest.getLastName())
-                        .ifPresent(potentialNewGuests::add);
-                }
-        );
+        // fetch actual room price
+        var actualPrice = pricingAdapter.getPriceOfRoom(booking.getRoom().getId(), booking.getFrom(), booking.getTo());
+        booking.setPrice(actualPrice);
 
-        if (!potentialNewGuests.isEmpty()) {
-            booking.getGuests().removeAll(booking.getGuests());
-            booking.getGuests().addAll(potentialNewGuests);
-        } else {
-            booking.getGuests().forEach(guest -> {
-                guest.setId(UUID.randomUUID());
-                // STORING the new guest in its domain
-                guestAdapter.createGuest(guest);
-            });
-        }
-
+        // entity needs a primary key
         booking.setId(UUID.randomUUID());
+
+        // adding to bookings
         storageService.hotel.getBookings().add(booking);
 
         // STORE IT!
         storageService.store(storageService.hotel.getBookings());
-        log.info("Created booking: {}", booking);
+        // create Domain event
+        bookingEventPublisher.publishBookingEvent(booking);
 
+        log.info("Created booking: {}", booking);
         return booking;
     }
 

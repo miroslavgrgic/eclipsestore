@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -26,5 +27,18 @@ public class Booking {
 
     private LocalDate from;
     private LocalDate to;
+
+    @Setter
+    private BigDecimal price;
+
+    @Builder.Default
+    @Setter
+    private PaymentStatus paymentStatus = PaymentStatus.OPEN;
+
+    public enum PaymentStatus {
+        OPEN,
+        PAID,
+        CANCELLED
+    }
 
 }

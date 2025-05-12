@@ -1,11 +1,11 @@
 package hr.ogcs.eclipsestore.hotel.domain.pricing;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
-public interface PricingPort {
+public sealed interface PricingPort permits PricingPortImpl {
 
-    BigDecimal getPriceOfRoom(UUID roomId, Date from, Date to);
+    BigDecimal getPriceOfRoom(UUID roomId, LocalDate from, LocalDate to);
 
 }

@@ -19,4 +19,5 @@ public class Price {
     public BigDecimal getPrice() {
         return price.subtract(discount);
     }
+
 }

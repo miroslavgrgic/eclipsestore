@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -84,7 +85,9 @@ class BookingIntegrationTest {
 
         // then
         Assertions.assertInstanceOf(UUID.class, result.getId());
-        Assertions.assertEquals(result.getRoom(), roomService.findById(roomId).get());
+        assertEquals(result.getRoom(), roomService.findById(roomId).get());
+        // verify the event happens
+        assertEquals(Booking.PaymentStatus.PAID, bookingService.getBooking(result.getId()).orElseThrow().getPaymentStatus());
     }
 
 }
