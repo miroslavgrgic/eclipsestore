@@ -31,8 +31,7 @@ public class Hotel {
     public boolean isHandicapFriendlyHotel() {
         return rooms.stream()
                 .filter(Room::canBeUsedWithHandicaps)
-                .toList()
-                .size() > 2;
+                .count() > 2;
     }
 
     // TODO implement some more Hotel domain related methods

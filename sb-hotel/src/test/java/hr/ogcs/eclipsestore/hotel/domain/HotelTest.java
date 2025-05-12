@@ -1,5 +1,6 @@
 package hr.ogcs.eclipsestore.hotel.domain;
 
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
@@ -7,8 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HotelTest {
@@ -32,6 +35,30 @@ class HotelTest {
         hotel.getRooms().add(createRoom("Victoria"));
 
         assertTrue(hotel.isHandicapFriendlyHotel());
+    }
+
+    @Test
+    void should_return_all_hotel_guests() {
+        hotel.getGuests().addAll(createGuests());
+
+        assertEquals(2, hotel.getGuests().size());
+    }
+
+    @Test
+    void should_return_a_valid_booking() {
+        hotel.getBookings().add(
+                Booking.builder()
+                        .from(LocalDate.now().plusDays(2))
+                        .to(LocalDate.now().plusDays(7))
+                        .room(createRoom("Anastasia"))
+                        .guests(createGuests())
+                        .build()
+        );
+
+        assertEquals(1, hotel.getBookings().size());
+        assertEquals(2, hotel.getBookings().stream().findFirst().get().getGuests().size());
+        assertEquals(BigDecimal.valueOf(100.00), hotel.getBookings().stream().findFirst().get()
+                .getRoom().getDefaultPrice());
     }
 
     private Room createRoom(String name) {
