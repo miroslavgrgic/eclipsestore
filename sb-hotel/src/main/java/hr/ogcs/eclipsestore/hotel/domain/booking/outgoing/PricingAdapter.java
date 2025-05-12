@@ -1,6 +1,6 @@
-package hr.ogcs.eclipsestore.hotel.domain.booking;
+package hr.ogcs.eclipsestore.hotel.domain.booking.outgoing;
 
-import hr.ogcs.eclipsestore.hotel.domain.pricing.PricingPort;
+import hr.ogcs.eclipsestore.hotel.domain.pricing.incoming.PricingPort;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

@@ -20,4 +20,8 @@ public class Price {
         return price.subtract(discount);
     }
 
+    public static BigDecimal getXmasSurcharge() {
+        return BigDecimal.valueOf(1.2);
+    }
+
 }

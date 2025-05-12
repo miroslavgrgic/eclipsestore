@@ -1,10 +1,9 @@
-package hr.ogcs.eclipsestore.hotel.domain.booking;
+package hr.ogcs.eclipsestore.hotel.domain.booking.outgoing;
 
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
-import hr.ogcs.eclipsestore.hotel.domain.guest.GuestPort;
+import hr.ogcs.eclipsestore.hotel.domain.guest.incoming.GuestPort;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,11 +21,10 @@ public class GuestAdapter {
         return guestPort.createGuest(guest).getId();
     }
 
-    public List<Guest> find(List<Guest> guests) {
-        List<Guest> existingGuests = new ArrayList<>();
-        guests.forEach(guest -> guestPort.findById(guest.getId())
-                .ifPresentOrElse(existingGuests::add, () -> existingGuests.add(guestPort.createGuest(guest))));
-        return existingGuests;
+    public void upsert(List<Guest> guests) {
+        guests.stream()
+                .filter(guest -> guestPort.findById(guest.getId()).isEmpty())
+                .forEach(guest -> guest.setId(guestPort.createGuest(guest).getId()));
     }
 
     public Optional<Guest> findByLastname(String lastname) {

@@ -1,5 +1,7 @@
-package hr.ogcs.eclipsestore.hotel.domain.booking;
+package hr.ogcs.eclipsestore.hotel.domain.booking.incoming;
 
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
+import hr.ogcs.eclipsestore.hotel.domain.booking.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -7,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class BookingPortImpl implements BookingPort {
+public final class BookingPortImpl implements BookingPort {
 
     @Autowired
     BookingService bookingService;

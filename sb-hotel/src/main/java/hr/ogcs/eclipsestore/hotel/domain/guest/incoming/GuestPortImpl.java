@@ -1,5 +1,7 @@
-package hr.ogcs.eclipsestore.hotel.domain.guest;
+package hr.ogcs.eclipsestore.hotel.domain.guest.incoming;
 
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

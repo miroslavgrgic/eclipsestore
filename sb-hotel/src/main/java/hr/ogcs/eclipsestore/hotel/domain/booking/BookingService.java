@@ -1,6 +1,6 @@
 package hr.ogcs.eclipsestore.hotel.domain.booking;
 
-import hr.ogcs.eclipsestore.hotel.repository.StorageService;
+import hr.ogcs.eclipsestore.hotel.domain.booking.outgoing.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +12,7 @@ import java.util.UUID;
 @Slf4j
 public class BookingService {
 
-    private final StorageService storageService;
-
+    private final DatabaseAdapter databaseAdapter;
     private final GuestAdapter guestAdapter;
     private final RoomAdapter roomAdapter;
     private final PricingAdapter pricingAdapter;
@@ -21,8 +20,8 @@ public class BookingService {
 
     private final BookingEventPublisher bookingEventPublisher;
 
-    public BookingService(StorageService storageService, GuestAdapter guestAdapter, RoomAdapter roomAdapter, PricingAdapter pricingAdapter, PaymentAdapter paymentAdapter, BookingEventPublisher bookingEventPublisher) {
-        this.storageService = storageService;
+    public BookingService(DatabaseAdapter databaseAdapter, GuestAdapter guestAdapter, RoomAdapter roomAdapter, PricingAdapter pricingAdapter, PaymentAdapter paymentAdapter, BookingEventPublisher bookingEventPublisher) {
+        this.databaseAdapter = databaseAdapter;
         this.guestAdapter = guestAdapter;
         this.roomAdapter = roomAdapter;
         this.pricingAdapter = pricingAdapter;
@@ -31,11 +30,11 @@ public class BookingService {
     }
 
     public List<Booking> getAllBookings() {
-        return storageService.hotel.getBookings();
+        return databaseAdapter.getBookings();
     }
 
     public Optional<Booking> getBooking(UUID id) {
-        return storageService.hotel.getBookings().stream().filter(booking -> booking.getId().equals(id)).findFirst();
+        return databaseAdapter.getBooking(id);
     }
 
     public Booking createBooking(Booking booking) {
@@ -44,8 +43,8 @@ public class BookingService {
             throw new IllegalArgumentException("Booking is invalid");
         }
 
-        // check if guest exists
-        var guests = guestAdapter.find(booking.getGuests());
+        // update guests
+        guestAdapter.upsert(booking.getGuests());
 
         // check if room exists
         var room = roomAdapter.findById(booking.getRoom().getId())
@@ -55,18 +54,12 @@ public class BookingService {
             throw new IllegalArgumentException("Too many guests for this room");
         }
 
-        // fetch actual room price
-        var actualPrice = pricingAdapter.getPriceOfRoom(booking.getRoom().getId(), booking.getFrom(), booking.getTo());
-        booking.setPrice(actualPrice);
-
-        // entity needs a primary key
-        booking.setId(UUID.randomUUID());
+        // fetch actual room price depending on dates
+        booking.setPrice(pricingAdapter.getPriceOfRoom(booking.getRoom().getId(), booking.getFrom(), booking.getTo()));
 
         // adding to bookings
-        storageService.hotel.getBookings().add(booking);
+        databaseAdapter.save(booking);
 
-        // STORE IT!
-        storageService.store(storageService.hotel.getBookings());
         // create Domain event
         bookingEventPublisher.publishBookingEvent(booking);
 
@@ -75,17 +68,8 @@ public class BookingService {
     }
 
     public void deleteBookingByID(UUID bookingID) {
-        Optional<Booking> booking = storageService.hotel.getBookings().stream()
-                .filter(item -> item.getId().equals(bookingID))
-                .findFirst();
-
-        if (booking.isEmpty()) {
-            throw new IllegalArgumentException("Trying to delete Booking " + bookingID + " that does not exist!");
-        } else {
-            storageService.hotel.getBookings().remove(booking.get());
-            storageService.storageManager.store(storageService.hotel.getBookings());
-            log.info("Deleted Booking with ID {}", bookingID);
-        }
+        databaseAdapter.deleteBookingByID(bookingID);
+        log.info("Deleted Booking with ID {}", bookingID);
     }
 
 }

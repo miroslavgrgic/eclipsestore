@@ -1,4 +1,6 @@
-package hr.ogcs.eclipsestore.hotel.domain.guest;
+package hr.ogcs.eclipsestore.hotel.domain.guest.incoming;
+
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 
 import java.util.Optional;
 import java.util.UUID;

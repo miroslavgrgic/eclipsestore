@@ -1,6 +1,7 @@
-package hr.ogcs.eclipsestore.hotel.domain.booking;
+package hr.ogcs.eclipsestore.hotel.domain.booking.outgoing;
 
-import hr.ogcs.eclipsestore.hotel.domain.payment.PaymentPort;
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
+import hr.ogcs.eclipsestore.hotel.domain.payment.incoming.PaymentPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

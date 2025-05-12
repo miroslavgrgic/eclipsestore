@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.domain.pricing;
+package hr.ogcs.eclipsestore.hotel.domain.pricing.incoming;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

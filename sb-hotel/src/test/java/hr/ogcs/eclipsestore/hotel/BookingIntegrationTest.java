@@ -1,8 +1,8 @@
 package hr.ogcs.eclipsestore.hotel;
 
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.booking.BookingService;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Address;
-import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
@@ -86,7 +86,7 @@ class BookingIntegrationTest {
         // then
         Assertions.assertInstanceOf(UUID.class, result.getId());
         assertEquals(result.getRoom(), roomService.findById(roomId).get());
-        // verify the event happens
+        // verify the event happens and set the payment status
         assertEquals(Booking.PaymentStatus.PAID, bookingService.getBooking(result.getId()).orElseThrow().getPaymentStatus());
     }
 

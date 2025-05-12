@@ -1,8 +1,8 @@
-package hr.ogcs.eclipsestore.hotel.domain.pricing;
+package hr.ogcs.eclipsestore.hotel.domain.pricing.incoming;
 
-import hr.ogcs.eclipsestore.hotel.domain.booking.RoomAdapter;
+import hr.ogcs.eclipsestore.hotel.domain.booking.outgoing.RoomAdapter;
+import hr.ogcs.eclipsestore.hotel.domain.pricing.Price;
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,8 +13,11 @@ import java.util.UUID;
 @Component
 public final class PricingPortImpl implements PricingPort {
 
-    @Autowired
-    private RoomAdapter roomAdapter;
+    private final RoomAdapter roomAdapter;
+
+    public PricingPortImpl(RoomAdapter roomAdapter) {
+        this.roomAdapter = roomAdapter;
+    }
 
     @Override
     public BigDecimal getPriceOfRoom(UUID roomId, LocalDate from, LocalDate to) {
@@ -24,7 +27,7 @@ public final class PricingPortImpl implements PricingPort {
         }
 
         return switch (from) {
-            case LocalDate f when isDuringXmasTime(f) -> room.get().getDefaultPrice().multiply(BigDecimal.valueOf(1.2));
+            case LocalDate f when isDuringXmasTime(f) -> room.get().getDefaultPrice().multiply(Price.getXmasSurcharge());
             default -> room.get().getDefaultPrice();
         };
     }

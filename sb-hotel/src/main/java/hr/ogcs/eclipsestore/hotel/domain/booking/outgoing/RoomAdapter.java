@@ -1,7 +1,7 @@
-package hr.ogcs.eclipsestore.hotel.domain.booking;
+package hr.ogcs.eclipsestore.hotel.domain.booking.outgoing;
 
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
-import hr.ogcs.eclipsestore.hotel.domain.room.RoomPort;
+import hr.ogcs.eclipsestore.hotel.domain.room.incoming.RoomPort;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

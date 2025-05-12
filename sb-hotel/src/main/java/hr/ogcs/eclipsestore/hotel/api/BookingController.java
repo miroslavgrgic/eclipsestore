@@ -19,15 +19,15 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+    @GetMapping
+    public List<Booking> getAllBookings() {
+        return bookingService.getAllBookings();
+    }
+
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
         Booking newBooking = bookingService.createBooking(booking);
         return ResponseEntity.status(HttpStatus.OK).body(newBooking);
-    }
-
-    @GetMapping
-    public List<Booking> getAllBookings() {
-        return bookingService.getAllBookings();
     }
 
     @DeleteMapping(value = "/{id}")

@@ -1,5 +1,7 @@
-package hr.ogcs.eclipsestore.hotel.domain.room;
+package hr.ogcs.eclipsestore.hotel.domain.room.incoming;
 
+import hr.ogcs.eclipsestore.hotel.domain.room.Room;
+import hr.ogcs.eclipsestore.hotel.domain.room.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
