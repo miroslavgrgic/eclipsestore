@@ -5,7 +5,7 @@ import hr.ogcs.eclipsestore.hotel.domain.payment.Payment;
 import hr.ogcs.eclipsestore.hotel.repository.StorageService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public class PaymentService {
     }
 
     public void auditPayment(Booking booking) {
-        Payment payment = new Payment(booking, "DummyProviderId", LocalDate.now());
+        Payment payment = new Payment(booking, "DummyProviderId", new Date());
         storageService.hotel.getPayments().put(UUID.randomUUID(), payment);
     }
 
