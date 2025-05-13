@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @RestController
@@ -36,12 +33,17 @@ public class GuestController {
 
     @GetMapping
     public List<Guest> getAllGuests() {
-        return guestPort.getAllGuests();
+        return guestPort.getAllGuests().stream()
+                .sorted(Comparator.comparing(Guest::getLastName))
+                .toList();
     }
 
     @GetMapping(params = "limit")
     public List<Guest> getSubsetOfGuests(Integer limit) {
-        return guestPort.getAllGuests().stream().limit((limit == null ? 0 : limit)).toList();
+        return guestPort.getAllGuests().stream()
+                .limit((limit == null ? 0 : limit))
+                .sorted(Comparator.comparing(Guest::getAge))
+                .toList();
     }
 
     @GetMapping(path = "/{id}")
