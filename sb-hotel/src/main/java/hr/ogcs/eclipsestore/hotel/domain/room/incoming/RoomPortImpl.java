@@ -16,6 +16,11 @@ public final class RoomPortImpl implements RoomPort {
     RoomService roomService;
 
     @Override
+    public List<Room> getAllRooms() {
+        return roomService.getAllRooms();
+    }
+
+    @Override
     public Optional<Room> findById(UUID id) {
         return roomService.findById(id);
     }
@@ -26,13 +31,23 @@ public final class RoomPortImpl implements RoomPort {
     }
 
     @Override
-    public List<Room> findByPrice(int min, int max) {
+    public List<Room> findByPriceRange(int min, int max) {
         return roomService.findByPrice(min, max);
     }
 
     @Override
     public List<Room> findByNumberOfGuest(int amount) {
         return roomService.findByNumberOfGuest(amount);
+    }
+
+    @Override
+    public Room createRoom(Room room) {
+        return roomService.createRoom(room);
+    }
+
+    @Override
+    public void deleteRoomByID(UUID id) {
+        roomService.deleteRoomByID(id);
     }
 
 }

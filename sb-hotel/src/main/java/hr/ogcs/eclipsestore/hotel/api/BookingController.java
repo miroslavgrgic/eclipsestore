@@ -1,7 +1,7 @@
 package hr.ogcs.eclipsestore.hotel.api;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
-import hr.ogcs.eclipsestore.hotel.domain.booking.BookingService;
+import hr.ogcs.eclipsestore.hotel.domain.booking.incoming.BookingPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,26 +13,26 @@ import java.util.UUID;
 @RequestMapping(value = "/bookings")
 public class BookingController {
 
-    private final BookingService bookingService;
+    private final BookingPort bookingPort;
 
-    public BookingController(BookingService bookingService) {
-        this.bookingService = bookingService;
+    public BookingController(BookingPort bookingPort) {
+        this.bookingPort = bookingPort;
     }
 
     @GetMapping
     public List<Booking> getAllBookings() {
-        return bookingService.getAllBookings();
+        return bookingPort.getAllBookings();
     }
 
     @PostMapping
     public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking(booking);
+        Booking newBooking = bookingPort.createBooking(booking);
         return ResponseEntity.status(HttpStatus.OK).body(newBooking);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteBooking(@PathVariable(value = "id") UUID id) {
-        bookingService.deleteBookingByID(id);
+        bookingPort.deleteBookingByID(id);
         return ResponseEntity.accepted().build();
     }
 }

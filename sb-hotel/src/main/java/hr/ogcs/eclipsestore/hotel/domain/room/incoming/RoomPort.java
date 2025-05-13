@@ -8,9 +8,12 @@ import java.util.UUID;
 
 public sealed interface RoomPort permits RoomPortImpl {
 
+    List<Room> getAllRooms();
     Optional<Room> findById(UUID id);
     List<Room> findBySize(int minimumSqm);
-    List<Room> findByPrice(int min, int max);
+    List<Room> findByPriceRange(int min, int max);
     List<Room> findByNumberOfGuest(int amount);
 
+    Room createRoom(Room room);
+    void deleteRoomByID(UUID id);
 }

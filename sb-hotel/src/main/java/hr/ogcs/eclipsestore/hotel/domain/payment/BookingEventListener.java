@@ -2,7 +2,7 @@ package hr.ogcs.eclipsestore.hotel.domain.payment;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.booking.BookingEvent;
-import hr.ogcs.eclipsestore.hotel.domain.booking.BookingService;
+import hr.ogcs.eclipsestore.hotel.domain.booking.incoming.BookingPort;
 import hr.ogcs.eclipsestore.hotel.domain.payment.incoming.PaymentPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 public class BookingEventListener implements ApplicationListener<BookingEvent> {
 
     @Autowired
-    private BookingService bookingService;
+    //private BookingService bookingService;
+    private BookingPort bookingPort;
     @Autowired
     private PaymentPort paymentPort;
 
@@ -23,7 +24,7 @@ public class BookingEventListener implements ApplicationListener<BookingEvent> {
         Booking booking = (Booking) event.getSource();
 
         paymentPort.processPayment(booking);
-        bookingService.getBooking((booking).getId())
+        bookingPort.getBooking((booking).getId())
                 .ifPresent(b -> b.setPaymentStatus(Booking.PaymentStatus.PAID));
 
         log.info("Triggerd payment for booking: {} and set to PAID status", booking);

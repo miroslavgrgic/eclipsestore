@@ -2,6 +2,7 @@ package hr.ogcs.eclipsestore.hotel.api;
 
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;
+import hr.ogcs.eclipsestore.hotel.domain.guest.incoming.GuestPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,40 +20,46 @@ import java.util.stream.IntStream;
 @Slf4j
 public class GuestController {
 
-    private final GuestService guestService;
+    private final GuestPort guestPort;
 
-    public GuestController(GuestService guestService) {
+
+    public GuestController(GuestPort guestPort, GuestService guestService) {
+        this.guestPort = guestPort;
         this.guestService = guestService;
     }
 
     @PostMapping
     public ResponseEntity<UUID> createGuest(@RequestBody Guest guest) {
-        Guest newGuest = guestService.createGuest(guest);
+        Guest newGuest = guestPort.createGuest(guest);
         return ResponseEntity.status(HttpStatus.OK).body(newGuest.getId());
     }
 
     @GetMapping
     public List<Guest> getAllGuests() {
-        return guestService.getAllGuests();
+        return guestPort.getAllGuests();
     }
 
     @GetMapping(params = "limit")
     public List<Guest> getSubsetOfGuests(Integer limit) {
-        return guestService.getAllGuests().stream().limit((limit == null ? 0 : limit)).toList();
+        return guestPort.getAllGuests().stream().limit((limit == null ? 0 : limit)).toList();
     }
 
     @GetMapping(path = "/{id}")
     public Guest getGuestById(@PathVariable("id") UUID id) {
-        return guestService.getAllGuests().stream()
+        return guestPort.getAllGuests().stream()
                 .filter(guest -> guest.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Guest with given ID not found"));
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteGuest(@PathVariable(value = "id") UUID id) {
-        guestService.deleteGuestByID(id);
+        guestPort.deleteGuestByID(id);
         return ResponseEntity.accepted().build();
     }
+
+    // Bypassing the DDD world now...
+    // just using for direct creation of bunch of data
+    private final GuestService guestService;
 
     // It is not a valid REST endpoint -  just using for creating load on EclipseStore
     @PostMapping(path = "/bamm")

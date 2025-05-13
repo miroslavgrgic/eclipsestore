@@ -5,6 +5,7 @@ import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,8 +16,8 @@ public class GuestPortImpl implements GuestPort {
     GuestService guestService;
 
     @Override
-    public Guest createGuest(Guest guest) {
-        return guestService.createGuest(guest);
+    public List<Guest> getAllGuests() {
+        return guestService.getAllGuests();
     }
 
     @Override
@@ -28,5 +29,16 @@ public class GuestPortImpl implements GuestPort {
     public Optional<Guest> findByLastname(String lastName) {
         return guestService.findByLastname(lastName);
     }
+
+    @Override
+    public Guest createGuest(Guest guest) {
+        return guestService.createGuest(guest);
+    }
+
+    @Override
+    public void deleteGuestByID(UUID id) {
+        guestService.deleteGuestByID(id);
+    }
+
 
 }
