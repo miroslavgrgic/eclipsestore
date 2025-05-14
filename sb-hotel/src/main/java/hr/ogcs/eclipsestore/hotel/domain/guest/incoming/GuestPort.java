@@ -14,4 +14,5 @@ public interface GuestPort {
 
     Guest createGuest(Guest guest);
     void deleteGuestByID(UUID id);
+
 }

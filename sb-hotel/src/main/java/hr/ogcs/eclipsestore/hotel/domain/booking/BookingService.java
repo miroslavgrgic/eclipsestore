@@ -53,6 +53,7 @@ public class BookingService {
         if (room.maxNumberOfGuests() < booking.getGuests().size()) {
             throw new IllegalArgumentException("Too many guests for this room");
         }
+        booking.setRoom(room);
 
         // fetch actual room price depending on dates
         booking.setPrice(pricingAdapter.getPriceOfRoom(booking.getRoom().getId(), booking.getFrom(), booking.getTo()));

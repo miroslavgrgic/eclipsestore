@@ -24,6 +24,7 @@ public class Booking {
 
     private List<Guest> guests;
 
+    @Setter
     private Room room;
 
     private LocalDate from;
