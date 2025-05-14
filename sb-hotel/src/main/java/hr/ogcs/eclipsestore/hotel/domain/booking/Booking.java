@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,18 @@ public class Booking {
         OPEN,
         PAID,
         CANCELLED
+    }
+
+    public boolean isValid(Booking booking) {
+        final int MINIMUM_DAYS = 2;
+        return switch (booking) {
+            case null -> false;
+            case Booking b when b.getGuests().isEmpty() -> false;
+            case Booking b when b.getRoom() == null -> false;
+            case Booking b when b.getFrom().isAfter(b.getTo()) -> false;
+            case Booking b when ChronoUnit.DAYS.between(b.getFrom(), b.getTo()) < MINIMUM_DAYS -> false;
+            default -> true;
+        };
     }
 
 }

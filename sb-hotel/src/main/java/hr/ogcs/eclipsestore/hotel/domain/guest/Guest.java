@@ -38,4 +38,10 @@ public class Guest {
     public String getFullName() {
         return String.format("%s %s", firstName, lastName);
     }
+
+    public boolean isAddressValid() {
+        // TODO implement!
+        return true;
+    }
+
 }

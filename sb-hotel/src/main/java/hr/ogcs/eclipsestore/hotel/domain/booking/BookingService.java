@@ -39,7 +39,7 @@ public class BookingService {
 
     public Booking createBooking(Booking booking) {
         // validate booking
-        if (! BookingRules.isBookingValid(booking)) {
+        if (! booking.isValid(booking)) {
             throw new IllegalArgumentException("Booking is invalid");
         }
 
