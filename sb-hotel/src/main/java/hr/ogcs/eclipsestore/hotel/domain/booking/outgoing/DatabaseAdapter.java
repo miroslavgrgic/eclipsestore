@@ -22,7 +22,9 @@ public class DatabaseAdapter {
     }
 
     public Optional<Booking> getBooking(UUID id) {
-        return storageService.hotel.getBookings().stream().filter(booking -> booking.getId().equals(id)).findFirst();
+        return storageService.hotel.getBookings().stream()
+                .filter(booking -> booking.getId().equals(id))
+                .findFirst();
     }
 
     public void save(Booking booking) {

@@ -16,7 +16,7 @@ public class BookingService {
     private final GuestAdapter guestAdapter;
     private final RoomAdapter roomAdapter;
     private final PricingAdapter pricingAdapter;
-    private final PaymentAdapter paymentAdapter;
+    //private final PaymentAdapter paymentAdapter;
 
     private final BookingEventPublisher bookingEventPublisher;
 
@@ -25,7 +25,7 @@ public class BookingService {
         this.guestAdapter = guestAdapter;
         this.roomAdapter = roomAdapter;
         this.pricingAdapter = pricingAdapter;
-        this.paymentAdapter = paymentAdapter;
+        //this.paymentAdapter = paymentAdapter;
         this.bookingEventPublisher = bookingEventPublisher;
     }
 
