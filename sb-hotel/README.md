@@ -9,7 +9,7 @@ POST http://localhost:8080/rooms
   "price": 123.45,
   "sqm": 167,
   "canBeUsedWithHandicaps": false,
-  "availableSince": 20010
+  "availableSince": 2010
 }
 ```
 

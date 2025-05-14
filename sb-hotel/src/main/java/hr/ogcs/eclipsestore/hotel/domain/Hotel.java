@@ -26,10 +26,8 @@ public class Hotel {
     private final List<Guest> guests = new ArrayList<>();
     private final List<Booking> bookings = new ArrayList<>();
 
-    private final Map<UUID, Payment> payments = new HashMap<>();
-
     // Still Domain model, but enriching by technical key for easier access
-    private final Map<UUID, Object> someObjects = new HashMap<>();
+    private final Map<UUID, Payment> payments = new HashMap<>();
 
     public boolean isHandicapFriendlyHotel() {
         return rooms.stream()
