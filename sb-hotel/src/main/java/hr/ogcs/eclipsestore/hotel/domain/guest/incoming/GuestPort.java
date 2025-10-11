@@ -12,6 +12,7 @@ public interface GuestPort {
     Optional<Guest> findById(UUID id);
     Optional<Guest> findByLastname(String lastName);
 
+    // FIXME too much power for the users of this interface!!
     Guest createGuest(Guest guest);
     void deleteGuestByID(UUID id);
 
