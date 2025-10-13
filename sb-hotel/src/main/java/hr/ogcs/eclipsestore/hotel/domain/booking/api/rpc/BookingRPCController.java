@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.api.rpc;
+package hr.ogcs.eclipsestore.hotel.domain.booking.api.rpc;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.booking.incoming.BookingPort;

@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.api;
+package hr.ogcs.eclipsestore.hotel.domain.guest.api;
 
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;

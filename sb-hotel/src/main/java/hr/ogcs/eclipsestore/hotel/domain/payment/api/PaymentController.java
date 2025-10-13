@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.api;
+package hr.ogcs.eclipsestore.hotel.domain.payment.api;
 
 import hr.ogcs.eclipsestore.hotel.domain.payment.Payment;
 import hr.ogcs.eclipsestore.hotel.domain.payment.incoming.PaymentPort;

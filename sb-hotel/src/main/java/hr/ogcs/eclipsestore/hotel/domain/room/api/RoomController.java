@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.api;
+package hr.ogcs.eclipsestore.hotel.domain.room.api;
 
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
 import hr.ogcs.eclipsestore.hotel.domain.room.incoming.RoomPort;
