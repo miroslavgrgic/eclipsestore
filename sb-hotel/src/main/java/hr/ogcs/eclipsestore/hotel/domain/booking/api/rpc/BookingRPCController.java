@@ -40,17 +40,19 @@ public class BookingRPCController {
     }
 
     @Tag(name = "Export Bookings by given date range.",
-            description = "Date can be on daily, monthly or year base. The CSV will contain the fields:" +
-                    "'id, roomNumber, guestName, from, to, price' separated by semicolons.")
+            description = "Dates can be on daily, monthly or year base. The CSV will contain the fields:" +
+                    "'id, roomNumber, guestName, from, to, price' separated by semicolons." +
+                    "If no records are given, just a CSV file with the field names will be returned.")
     @PostMapping(value = "exportAllBookingsAsCSV", produces = "text/csv")
     public ResponseEntity<List<Object>> exportAllBookingsAsCSV(@RequestParam LocalDate from, @RequestParam LocalDate to) {
         // TODO not yet implemented
         return ResponseEntity.accepted().build();
     }
 
-    @Tag(name = "Export Bookings by given date range.",
-            description = "Date can be on daily, monthly or year base. The file will contain the fields:" +
-                    "'id, roomNumber, guestName, from, to, price'.")
+    @Tag(name = "Export Bookings by given date range in your preferred format.",
+            description = "Dates can be on daily, monthly or year base. The file will contain the fields:" +
+                    "'id, roomNumber, guestName, from, to, price'." +
+                    "If no records are given, a 404 will be returned.")
     @PostMapping(value = "/exportAllBookingsByGivenFormat")
     public ResponseEntity<List<Object>> exportAllBookingsByGivenFormat(
             @RequestParam ExportFormat format,
