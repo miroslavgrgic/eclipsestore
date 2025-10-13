@@ -37,4 +37,9 @@ public final class BookingPortImpl implements BookingPort {
         bookingService.deleteBookingByID(id);
     }
 
+    @Override
+    public void archiveBookingByID(UUID id) {
+        // not yet implemented
+    }
+
 }

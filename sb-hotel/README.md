@@ -1,5 +1,10 @@
 # SpringBoot
 
+### API Docs
+
+Swagger: http://localhost:8080/swagger-ui/index.html
+OpenAPI: http://localhost:8080/v3/api-docs
+
 ## Rooms
 
 POST http://localhost:8080/rooms

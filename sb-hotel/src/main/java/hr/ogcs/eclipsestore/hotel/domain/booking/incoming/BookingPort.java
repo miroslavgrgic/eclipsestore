@@ -13,4 +13,5 @@ public sealed interface BookingPort permits BookingPortImpl {
     Booking createBooking(final Booking booking);
     void deleteBookingByID(UUID id);
 
+    void archiveBookingByID(UUID id);
 }
