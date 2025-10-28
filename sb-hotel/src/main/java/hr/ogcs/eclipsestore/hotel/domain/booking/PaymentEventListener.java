@@ -1,6 +1,6 @@
 package hr.ogcs.eclipsestore.hotel.domain.booking;
 
-import hr.ogcs.eclipsestore.hotel.domain.payment.PaymentEvent;
+import hr.ogcs.eclipsestore.hotel.domain.payment.outgoing.PaymentEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;

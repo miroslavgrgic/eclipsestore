@@ -1,8 +1,8 @@
 package hr.ogcs.eclipsestore.hotel.domain.payment.incoming;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
-import hr.ogcs.eclipsestore.hotel.domain.payment.Payment;
-import hr.ogcs.eclipsestore.hotel.domain.payment.PaymentEventPublisher;
+import hr.ogcs.eclipsestore.hotel.domain.payment.model.Payment;
+import hr.ogcs.eclipsestore.hotel.domain.payment.outgoing.PaymentEventPublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

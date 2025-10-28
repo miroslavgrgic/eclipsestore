@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.domain.payment;
+package hr.ogcs.eclipsestore.hotel.domain.payment.model;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 

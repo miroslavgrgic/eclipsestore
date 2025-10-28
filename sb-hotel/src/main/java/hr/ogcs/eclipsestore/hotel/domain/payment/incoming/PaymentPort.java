@@ -1,7 +1,7 @@
 package hr.ogcs.eclipsestore.hotel.domain.payment.incoming;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
-import hr.ogcs.eclipsestore.hotel.domain.payment.Payment;
+import hr.ogcs.eclipsestore.hotel.domain.payment.model.Payment;
 
 import java.util.Map;
 import java.util.UUID;

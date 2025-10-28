@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.domain.payment;
+package hr.ogcs.eclipsestore.hotel.domain.payment.outgoing;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

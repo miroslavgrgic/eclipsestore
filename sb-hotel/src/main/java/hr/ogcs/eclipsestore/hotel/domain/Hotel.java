@@ -2,7 +2,7 @@ package hr.ogcs.eclipsestore.hotel.domain;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
-import hr.ogcs.eclipsestore.hotel.domain.payment.Payment;
+import hr.ogcs.eclipsestore.hotel.domain.payment.model.Payment;
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
 import lombok.Getter;
 import lombok.experimental.Accessors;

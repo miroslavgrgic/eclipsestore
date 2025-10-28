@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestore.hotel.domain.payment;
+package hr.ogcs.eclipsestore.hotel.domain.payment.outgoing;
 
 import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import org.springframework.beans.factory.annotation.Autowired;

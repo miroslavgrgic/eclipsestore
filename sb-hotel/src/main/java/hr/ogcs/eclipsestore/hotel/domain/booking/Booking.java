@@ -43,9 +43,9 @@ public class Booking {
         CANCELLED
     }
 
-    public boolean isValid(Booking booking) {
+    public boolean isValid() {
         final int MINIMUM_DAYS = 2;
-        return switch (booking) {
+        return switch (this) {
             case null -> false;
             case Booking b when b.getGuests().isEmpty() -> false;
             case Booking b when b.getRoom() == null -> false;
