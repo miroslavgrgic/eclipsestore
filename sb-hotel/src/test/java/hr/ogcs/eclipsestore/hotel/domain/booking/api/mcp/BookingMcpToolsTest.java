@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookingMcpToolsTest {
 
-    private BookingService bookingServiceMock;
     private BookingMcpTools bookingMcpTools;
 
     private Booking aprilBooking;
@@ -27,7 +26,7 @@ class BookingMcpToolsTest {
 
     @BeforeEach
     void setUp() {
-        bookingServiceMock = Mockito.mock(BookingService.class);
+        BookingService bookingServiceMock = Mockito.mock(BookingService.class);
         BookingPortImpl bookingPort = new BookingPortImpl();
         ReflectionTestUtils.setField(bookingPort, "bookingService", bookingServiceMock);
         bookingMcpTools = new BookingMcpTools(bookingPort);
