@@ -1,0 +1,19 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: eclipsestore-client
+  ai:
+    mcp:
+      client:
+        name: eclipsestore-mcp-client
+        streamable-http:
+          connections:
+            sb-hotel:
+              url: http://localhost:8080
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY}
+      chat:
+        #model: claude-opus-4-6 ... 4-8 ... 5
+        model: claude-haiku-4-5
