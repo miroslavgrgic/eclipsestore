@@ -1,5 +1,6 @@
 package hr.ogcs.eclipsestore.hotel.config;
 
+import hr.ogcs.eclipsestore.hotel.domain.HotelMcpTools;
 import hr.ogcs.eclipsestore.hotel.domain.booking.api.mcp.BookingMcpTools;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
@@ -10,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 public class McpToolConfig {
 
     @Bean
-    public ToolCallbackProvider bookingToolCallbackProvider(BookingMcpTools bookingMcpTools) {
+    public ToolCallbackProvider bookingToolCallbackProvider(BookingMcpTools bookingMcpTools, HotelMcpTools hotelMcpTools) {
         return MethodToolCallbackProvider.builder()
-                .toolObjects(bookingMcpTools)
+                .toolObjects(bookingMcpTools, hotelMcpTools)
                 .build();
     }
 }
