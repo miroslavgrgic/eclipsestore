@@ -24,8 +24,7 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	implementation 'org.eclipse.store:storage-embedded:1.3.2'
-	// implementation 'org.eclipse.store:storage-embedded:2.1.3'
+	implementation 'org.eclipse.store:storage-embedded:4.0.1'
 
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
 

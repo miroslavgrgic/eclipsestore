@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: sb-hotel
+  jackson:
+    default-property-inclusion: non_null
+  ai:
+    mcp:
+      server:
+        name: eclipsestore-mcp
+        protocol: stateless
+
+eclipsestore:
+  path: ${ES_PATH:sb-hotel/database}
+

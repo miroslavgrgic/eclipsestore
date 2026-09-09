@@ -4,8 +4,10 @@ import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import hr.ogcs.eclipsestore.hotel.domain.payment.model.Payment;
 import hr.ogcs.eclipsestore.hotel.domain.room.Room;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.eclipse.serializer.reference.Lazy;
 
 import java.util.*;
 
@@ -27,7 +29,13 @@ public class Hotel {
     private final List<Booking> bookings = new ArrayList<>();
 
     // Still Domain model, but enriching by technical key for easier access
-    private final Map<UUID, Payment> payments = new HashMap<>();
+    // Lazily loaded: the payments map is only fetched from storage on first access
+    @Getter(AccessLevel.NONE)
+    private final Lazy<Map<UUID, Payment>> payments = Lazy.Reference(new HashMap<>());
+
+    public Map<UUID, Payment> getPayments() {
+        return payments.get();
+    }
 
     public boolean isHandicapFriendlyHotel() {
         return rooms.stream()
