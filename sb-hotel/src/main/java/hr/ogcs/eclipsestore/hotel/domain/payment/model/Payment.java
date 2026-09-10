@@ -12,6 +12,9 @@ import static hr.ogcs.eclipsestore.hotel.domain.filter.FilterOperator.LESS_OR_EQ
 
 public record Payment(
         Booking booking,
-        @Filterable({EQUALS, CONTAINS}) String paymentProviderId,
-        @Filterable({EQUALS, GREATER_OR_EQUAL, LESS_OR_EQUAL}) Date paymentDate) {
+        @Filterable({EQUALS, CONTAINS})
+        String paymentProviderId,
+        @Filterable({EQUALS, GREATER_OR_EQUAL, LESS_OR_EQUAL})
+        Date paymentDate
+) {
 }

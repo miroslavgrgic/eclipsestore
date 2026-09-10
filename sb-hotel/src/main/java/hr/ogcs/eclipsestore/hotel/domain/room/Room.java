@@ -38,6 +38,7 @@ public class Room {
     private UUID id = UUID.randomUUID();
 
     @Filterable({EQUALS, CONTAINS})
+    // TODO add here a mcp tool description ???
     private String name;
 
     @Filterable({EQUALS, GREATER_OR_EQUAL, LESS_OR_EQUAL})

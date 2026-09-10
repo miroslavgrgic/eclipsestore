@@ -35,7 +35,9 @@ public class Hotel {
     }
 
     // Our Domain Model
+    // this is a "has" relation in Graph theorem
     private final List<Room> rooms;
+    // TODO create annotation that describes another graph relation type, like "belongs to"
     private final List<Guest> guests;
     private final List<Booking> bookings;
 
