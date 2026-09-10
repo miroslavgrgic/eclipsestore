@@ -19,19 +19,30 @@ public class Hotel {
     private final boolean acceptsCreditCards;
 
     public Hotel(String name, boolean acceptsCreditCards) {
+        this(name, acceptsCreditCards, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+    }
+
+    // Builds an in-memory, non-persisted view of the hotel restricted to the given child
+    // entities, e.g. for returning filtered results without mutating or storing anything.
+    public Hotel(String name, boolean acceptsCreditCards, List<Room> rooms, List<Guest> guests,
+                 List<Booking> bookings, Map<UUID, Payment> payments) {
         this.name = name;
         this.acceptsCreditCards = acceptsCreditCards;
+        this.rooms = rooms;
+        this.guests = guests;
+        this.bookings = bookings;
+        this.payments = Lazy.Reference(payments);
     }
 
     // Our Domain Model
-    private final List<Room> rooms = new ArrayList<>();
-    private final List<Guest> guests = new ArrayList<>();
-    private final List<Booking> bookings = new ArrayList<>();
+    private final List<Room> rooms;
+    private final List<Guest> guests;
+    private final List<Booking> bookings;
 
     // Still Domain model, but enriching by technical key for easier access
     // Lazily loaded: the payments map is only fetched from storage on first access
     @Getter(AccessLevel.NONE)
-    private final Lazy<Map<UUID, Payment>> payments = Lazy.Reference(new HashMap<>());
+    private final Lazy<Map<UUID, Payment>> payments;
 
     public Map<UUID, Payment> getPayments() {
         return payments.get();
