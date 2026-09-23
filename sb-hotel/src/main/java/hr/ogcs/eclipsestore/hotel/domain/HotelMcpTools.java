@@ -74,9 +74,7 @@ public class HotelMcpTools {
 
     @Tool(name = "getGuestKnowledge", description = "Query all information about a dedicated guest including bookings, rooms, payments.")
     public GuestKnowledgeDTO getGuestKnowledge(
-            @ToolParam(description = "The guest's UUID."
-                    , required = false)
-            UUID guestId) {
+            @ToolParam(description = "The guest's UUID.") UUID guestId) {
         Hotel hotel = storageService.hotel;
         var guest = hotel.getGuests().stream().filter(g -> g.getId().equals(guestId)).findFirst().orElseThrow(IllegalArgumentException::new);
         var bookings = hotel.getBookings().stream()
@@ -91,6 +89,20 @@ public class HotelMcpTools {
     }
 
     public record GuestKnowledgeDTO(Guest guest, List<Room> rooms, List<Booking> bookings, List<Payment> payments) {}
+
+    @Tool(name = "getBookingKnowledge", description = "Query all information about a dedicated booking including guests, rooms, payments.")
+    public BookingKnowledgeDTO getBookingKnowledge(
+            @ToolParam(description = "The booking's UUID.") UUID bookingId) {
+        Hotel hotel = storageService.hotel;
+        var booking = hotel.getBookings().stream()
+                .filter(b -> b.getId().equals(bookingId)).findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+
+        log.info("getBookingKnowledge payload sent to MCP client: [booking={}]", booking);
+        return new BookingKnowledgeDTO(booking);
+    }
+
+    public record BookingKnowledgeDTO(Booking booking) {}
 
 
 }

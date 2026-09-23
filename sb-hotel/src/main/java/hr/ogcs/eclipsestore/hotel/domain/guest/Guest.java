@@ -38,6 +38,8 @@ public class Guest {
     @Filterable({EQUALS, GREATER_OR_EQUAL, LESS_OR_EQUAL})
     private int age;
 
+    private boolean isTheBooker;
+
     private Address address;
 
     public boolean isAllowedToConsumeAlcohol() {
