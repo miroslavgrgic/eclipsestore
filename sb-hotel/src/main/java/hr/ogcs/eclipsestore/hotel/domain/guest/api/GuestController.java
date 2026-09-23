@@ -1,5 +1,6 @@
 package hr.ogcs.eclipsestore.hotel.domain.guest.api;
 
+import hr.ogcs.eclipsestore.hotel.domain.HotelMcpTools;
 import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
 import hr.ogcs.eclipsestore.hotel.domain.guest.GuestService;
 import hr.ogcs.eclipsestore.hotel.domain.guest.incoming.GuestPort;
@@ -19,9 +20,12 @@ public class GuestController {
 
     private final GuestPort guestPort;
 
+    // TODO remove when done. just for testing using REST instead of mcp
+    private final HotelMcpTools hotelMcpTools;
 
-    public GuestController(GuestPort guestPort, GuestService guestService) {
+    public GuestController(GuestPort guestPort, HotelMcpTools hotelMcpTools, GuestService guestService) {
         this.guestPort = guestPort;
+        this.hotelMcpTools = hotelMcpTools;
         this.guestService = guestService;
     }
 
@@ -38,6 +42,12 @@ public class GuestController {
                 .toList();
     }
 
+    @GetMapping("/knowledge/{id}")
+    public HotelMcpTools.GuestKnowledgeDTO getGuestKnowledge(
+            @PathVariable UUID id) {
+        return hotelMcpTools.getGuestKnowledge(id);
+    }
+
     @GetMapping(params = "limit")
     public List<Guest> getSubsetOfGuests(Integer limit) {
         return guestPort.getAllGuests().stream()
@@ -47,14 +57,14 @@ public class GuestController {
     }
 
     @GetMapping(path = "/{id}")
-    public Guest getGuestById(@PathVariable("id") UUID id) {
+    public Guest getGuestById(@PathVariable UUID id) {
         return guestPort.getAllGuests().stream()
                 .filter(guest -> guest.getId().equals(id)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Guest with given ID not found"));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteGuest(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Boolean> deleteGuest(@PathVariable UUID id) {
         guestPort.deleteGuestByID(id);
         return ResponseEntity.accepted().build();
     }
