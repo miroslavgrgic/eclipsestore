@@ -19,8 +19,11 @@ public class ChatConfiguration {
 
     @Bean
     public ChatClient chatClient(ChatModel chatModel, SyncMcpToolCallbackProvider provider) {
+        ToolCallback[] recordingToolCallbacks = Arrays.stream(provider.getToolCallbacks())
+                .map(RecordingToolCallback::new)
+                .toArray(ToolCallback[]::new);
         return ChatClient
-                .builder(chatModel).defaultTools(provider)
+                .builder(chatModel).defaultTools((Object) recordingToolCallbacks)
                 .build();
     }
 

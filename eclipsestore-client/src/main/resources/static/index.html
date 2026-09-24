@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hotel Booking Assistant</title>
+  <title>Hotel Data Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light dark;
@@ -10,58 +13,98 @@
       --panel: #ffffff;
       --text: #1d1d1f;
       --muted: #6e6e73;
-      --accent: #0071e3;
-      --bubble-user: #0071e3;
+      --accent: #7c3aed;
+      --gradient-brand: linear-gradient(135deg, #6366f1 0%, rgb(28 21 37 / 0.9) 70%, #ed087a 100%);
       --bubble-user-text: #ffffff;
-      --bubble-bot: #e9e9eb;
-      --bubble-bot-text: #1d1d1f;
+      --bubble-bot: #f1edfe;
+      --bubble-bot-text: #29184a;
       --border: #d2d2d7;
+      --tool-divider: rgba(0, 0, 0, 0.1);
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #1c1c1e;
-        --panel: #2c2c2e;
+        --bg: #18131f;
+        --panel: #241b32;
         --text: #f5f5f7;
-        --muted: #a1a1a6;
-        --bubble-bot: #3a3a3c;
-        --bubble-bot-text: #f5f5f7;
-        --border: #48484a;
+        --muted: #b4a8c9;
+        --accent: #c084fc;
+        --bubble-bot: #362848;
+        --bubble-bot-text: #f0e9ff;
+        --border: #453360;
+        --tool-divider: rgba(255, 255, 255, 0.14);
       }
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
+      font-family: "Barlow", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.16), transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.14), transparent 45%),
+        var(--bg);
       color: var(--text);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 32px 16px;
+    }
+    .page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: min(680px, 100%);
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .brand .logo-badge {
+      filter: drop-shadow(0 8px 20px rgba(139, 92, 246, 0.45));
+    }
+    .brand-title {
+      margin: 0;
+      font-family: "Barlow Condensed", "Barlow", sans-serif;
+      font-size: clamp(26px, 7vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .brand-subtitle {
+      margin: 0;
+      font-family: "Barlow Condensed", "Barlow", sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
     .app {
-      width: min(680px, 100vw);
-      height: min(820px, 100vh);
+      width: 100%;
+      height: min(720px, calc(100vh - 180px));
       background: var(--panel);
-      border-radius: 16px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(107, 33, 168, 0.22);
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
     header {
       padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 600;
+      background: var(--gradient-brand);
+      flex-shrink: 0;
     }
     header p {
-      margin: 2px 0 0;
+      margin: 0;
       font-size: 13px;
-      color: var(--muted);
+      color: rgba(255, 255, 255, 0.92);
     }
     #messages {
       flex: 1;
@@ -70,6 +113,13 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+    }
+    #messages::-webkit-scrollbar,
+    #tools-list::-webkit-scrollbar { width: 8px; }
+    #messages::-webkit-scrollbar-thumb,
+    #tools-list::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #a855f7, #ec4899);
+      border-radius: 999px;
     }
     .msg {
       max-width: 80%;
@@ -82,7 +132,7 @@
     }
     .msg.user {
       align-self: flex-end;
-      background: var(--bubble-user);
+      background: var(--gradient-brand);
       color: var(--bubble-user-text);
       border-bottom-right-radius: 4px;
     }
@@ -94,19 +144,45 @@
     }
     .msg.error {
       align-self: flex-start;
-      background: #ffe5e5;
+      background: #ffe0e0;
       color: #b3261e;
+      border: 1px solid #f3b4b4;
     }
     .msg.pending {
       align-self: flex-start;
       color: var(--muted);
       font-style: italic;
     }
+    .msg-tools {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--tool-divider);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+    }
+    .msg-tools-label {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .msg-tools.msg-tools-none {
+      color: var(--muted);
+      font-style: italic;
+    }
+    .tool-badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
     form {
       display: flex;
       gap: 10px;
       padding: 16px;
       border-top: 1px solid var(--border);
+      flex-shrink: 0;
     }
     input[type="text"] {
       flex: 1;
@@ -121,32 +197,140 @@
       outline: 2px solid var(--accent);
     }
     button {
-      padding: 0 18px;
+      padding: 0 22px;
       border: none;
       border-radius: 10px;
-      background: var(--accent);
+      background: var(--gradient-brand);
       color: #fff;
-      font-size: 14px;
-      font-weight: 600;
+      font-family: "Barlow Condensed", "Barlow", sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
       cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+    }
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(139, 92, 246, 0.5);
     }
     button:disabled {
       opacity: 0.5;
       cursor: default;
+      box-shadow: none;
+    }
+    #tools-panel {
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    #tools-panel summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 16px;
+      font-family: "Barlow Condensed", "Barlow", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+    }
+    #tools-panel summary::-webkit-details-marker { display: none; }
+    #tools-panel summary::before {
+      content: "\25B8";
+      display: inline-block;
+      transition: transform 0.15s ease;
+      font-size: 11px;
+      color: var(--accent);
+    }
+    #tools-panel[open] summary::before { transform: rotate(90deg); }
+    #tools-list {
+      max-height: 260px;
+      overflow-y: auto;
+      padding: 0 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tool-card {
+      border: 1px solid var(--border);
+      border-left-width: 3px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: var(--bg);
+    }
+    .tool-card .tool-name {
+      font-family: "Barlow Condensed", "Barlow", sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .tool-card .tool-desc {
+      font-size: 12px;
+      color: var(--text);
+      margin: 4px 0 0;
+      line-height: 1.4;
+    }
+    .tool-card details {
+      margin-top: 6px;
+    }
+    .tool-card details summary {
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .tool-card pre {
+      margin: 6px 0 0;
+      padding: 8px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 11px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <h1>Hotel Booking Assistant</h1>
-      <p>Ask questions about bookings &mdash; e.g. "Which 3 bookings in April 2026 had the most guests?"</p>
-    </header>
-    <div id="messages"></div>
-    <form id="chat-form">
-      <input type="text" id="chat-input" placeholder="Ask about bookings..." autocomplete="off" autofocus />
-      <button type="submit" id="chat-submit">Send</button>
-    </form>
+  <div class="page">
+    <div class="brand">
+      <svg class="logo-badge" width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hotel Data Assistant logo">
+        <defs>
+          <linearGradient id="logoGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#6366f1"/>
+            <stop offset="55%" stop-color="#a855f7"/>
+            <stop offset="100%" stop-color="#ec4899"/>
+          </linearGradient>
+        </defs>
+        <rect width="64" height="64" rx="18" fill="url(#logoGrad)"/>
+        <path d="M32 14c-8.3 0-15 6.7-15 15v7.5l-4.5 7.5h39l-4.5-7.5V29c0-8.3-6.7-15-15-15z" fill="#ffffff"/>
+        <circle cx="32" cy="11" r="3" fill="#ffffff"/>
+        <circle cx="32" cy="47" r="3" fill="#ffffff"/>
+        <path d="M50 6l1.8 4.9 4.9 1.8-4.9 1.8L50 19.4l-1.8-4.9-4.9-1.8 4.9-1.8z" fill="#fde68a"/>
+      </svg>
+      <h1 class="brand-title">Hotel Data Assistant</h1>
+      <p class="brand-subtitle">MCP Client</p>
+    </div>
+
+    <div class="app">
+      <header>
+        <p>Ask questions about bookings &mdash; e.g. "Which 3 bookings in April 2026 had the most guests?"</p>
+      </header>
+      <div id="messages"></div>
+      <form id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ask about bookings..." autocomplete="off" autofocus />
+        <button type="submit" id="chat-submit">Send</button>
+      </form>
+      <details id="tools-panel">
+        <summary>Available MCP tools</summary>
+        <div id="tools-list"></div>
+      </details>
+    </div>
   </div>
 
   <script>
@@ -155,10 +339,63 @@
     const inputEl = document.getElementById('chat-input');
     const submitEl = document.getElementById('chat-submit');
 
-    function addMessage(text, className) {
+    // Consistent, distinct colors per MCP tool name, shared between the chat
+    // message badges and the reference panel below.
+    const TOOL_COLORS = [
+      { bg: 'rgba(99, 102, 241, 0.16)', fg: '#6366f1' },  // indigo
+      { bg: 'rgba(236, 72, 153, 0.16)', fg: '#db2777' },  // pink
+      { bg: 'rgba(168, 85, 247, 0.16)', fg: '#a855f7' },  // purple
+      { bg: 'rgba(20, 184, 166, 0.16)', fg: '#0d9488' },  // teal
+      { bg: 'rgba(249, 115, 22, 0.16)', fg: '#ea580c' },  // orange
+      { bg: 'rgba(34, 197, 94, 0.16)', fg: '#16a34a' },   // green
+      { bg: 'rgba(59, 130, 246, 0.16)', fg: '#2563eb' },  // blue
+    ];
+
+    function colorForTool(name) {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+      }
+      return TOOL_COLORS[hash % TOOL_COLORS.length];
+    }
+
+    function addMessage(text, className, usedTools) {
       const el = document.createElement('div');
       el.className = 'msg ' + className;
       el.textContent = text;
+
+      if (className === 'bot') {
+        const toolsEl = document.createElement('div');
+        toolsEl.className = 'msg-tools';
+
+        if (usedTools && usedTools.length > 0) {
+          const counts = new Map();
+          for (const name of usedTools) {
+            counts.set(name, (counts.get(name) || 0) + 1);
+          }
+
+          const label = document.createElement('span');
+          label.className = 'msg-tools-label';
+          label.textContent = 'MCP tools used:';
+          toolsEl.appendChild(label);
+
+          for (const [name, count] of counts) {
+            const badge = document.createElement('span');
+            badge.className = 'tool-badge';
+            const color = colorForTool(name);
+            badge.style.backgroundColor = color.bg;
+            badge.style.color = color.fg;
+            badge.textContent = count > 1 ? `${name} ×${count}` : name;
+            toolsEl.appendChild(badge);
+          }
+        } else {
+          toolsEl.classList.add('msg-tools-none');
+          toolsEl.textContent = 'No MCP tool used';
+        }
+
+        el.appendChild(toolsEl);
+      }
+
       messagesEl.appendChild(el);
       messagesEl.scrollTop = messagesEl.scrollHeight;
       return el;
@@ -189,7 +426,7 @@
 
         const data = await response.json();
         pending.remove();
-        addMessage(data.reply, 'bot');
+        addMessage(data.reply, 'bot', data.usedTools);
       } catch (err) {
         pending.remove();
         addMessage('Something went wrong: ' + err.message, 'error');
@@ -199,6 +436,83 @@
         inputEl.focus();
       }
     });
+
+    const toolsPanelEl = document.getElementById('tools-panel');
+    const toolsListEl = document.getElementById('tools-list');
+    const toolsSummaryEl = toolsPanelEl.querySelector('summary');
+
+    function formatSchema(inputSchema) {
+      try {
+        return JSON.stringify(JSON.parse(inputSchema), null, 2);
+      } catch (err) {
+        return inputSchema;
+      }
+    }
+
+    function renderTools(tools) {
+      toolsSummaryEl.textContent = `Available MCP tools (${tools.length})`;
+      toolsListEl.innerHTML = '';
+
+      if (tools.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'tool-card';
+        empty.textContent = 'No MCP tools discovered.';
+        toolsListEl.appendChild(empty);
+        return;
+      }
+
+      for (const tool of tools) {
+        const card = document.createElement('div');
+        card.className = 'tool-card';
+        const color = colorForTool(tool.name);
+        card.style.borderLeftColor = color.fg;
+
+        const name = document.createElement('div');
+        name.className = 'tool-name';
+        name.style.color = color.fg;
+        name.textContent = tool.name;
+        card.appendChild(name);
+
+        if (tool.description) {
+          const desc = document.createElement('p');
+          desc.className = 'tool-desc';
+          desc.textContent = tool.description;
+          card.appendChild(desc);
+        }
+
+        if (tool.inputSchema) {
+          const schemaDetails = document.createElement('details');
+          const schemaSummary = document.createElement('summary');
+          schemaSummary.textContent = 'Parameters';
+          const pre = document.createElement('pre');
+          pre.textContent = formatSchema(tool.inputSchema);
+          schemaDetails.appendChild(schemaSummary);
+          schemaDetails.appendChild(pre);
+          card.appendChild(schemaDetails);
+        }
+
+        toolsListEl.appendChild(card);
+      }
+    }
+
+    async function loadTools() {
+      try {
+        const response = await fetch('/api/tools');
+        if (!response.ok) {
+          throw new Error('Request failed with status ' + response.status);
+        }
+        renderTools(await response.json());
+      } catch (err) {
+        toolsSummaryEl.textContent = 'Available MCP tools';
+        toolsListEl.innerHTML = '';
+        const error = document.createElement('div');
+        error.className = 'tool-card';
+        error.textContent = 'Failed to load tools: ' + err.message;
+        toolsListEl.appendChild(error);
+      }
+    }
+
+    loadTools();
   </script>
 </body>
 </html>

@@ -25,7 +25,8 @@ public class HotelMcpTools {
         this.storageService = storageService;
     }
 
-    @Tool(name = "getHotel", description = "Query the whole hotel domain including bookings, guests, rooms, payments.")
+    // TODO: remove it! This Tool delivers to much data for the LLM context!
+    // @Tool(name = "getHotel", description = "Query the whole hotel domain including bookings, guests, rooms, payments.")
     public Hotel getCompleteHotel() {
         return storageService.hotel;
     }

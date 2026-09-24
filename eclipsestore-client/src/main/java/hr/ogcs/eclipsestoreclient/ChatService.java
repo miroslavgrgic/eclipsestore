@@ -3,6 +3,8 @@ package hr.ogcs.eclipsestoreclient;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ChatService {
 
@@ -12,10 +14,19 @@ public class ChatService {
         this.chatClient = chatClient;
     }
 
-    public String ask(String message) {
-        return chatClient.prompt()
-                .user(message)
-                .call()
-                .content();
+    public ChatAnswer ask(String message) {
+        ToolUsageRecorder.reset();
+        try {
+            String reply = chatClient.prompt()
+                    .user(message)
+                    .call()
+                    .content();
+            return new ChatAnswer(reply, ToolUsageRecorder.drain());
+        } finally {
+            ToolUsageRecorder.reset();
+        }
+    }
+
+    public record ChatAnswer(String reply, List<String> usedTools) {
     }
 }
