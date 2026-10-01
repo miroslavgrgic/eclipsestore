@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestoreclient;
+package hr.ogcs.hotel.dataassistant;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.ai.chat.model.ToolContext;
@@ -11,11 +11,11 @@ import org.springframework.ai.tool.metadata.ToolMetadata;
  * {@link ToolUsageRecorder}, so the chat UI can show which MCP tools were
  * used to answer a given question.
  */
-class RecordingToolCallback implements ToolCallback {
+public class RecordingToolCallback implements ToolCallback {
 
     private final ToolCallback delegate;
 
-    RecordingToolCallback(ToolCallback delegate) {
+    public RecordingToolCallback(ToolCallback delegate) {
         this.delegate = delegate;
     }
 

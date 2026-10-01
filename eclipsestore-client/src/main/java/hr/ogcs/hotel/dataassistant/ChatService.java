@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestoreclient;
+package hr.ogcs.hotel.dataassistant;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,8 @@ public class ChatService {
         ToolUsageRecorder.reset();
         try {
             String reply = chatClient.prompt()
+                    // TODO move System message to applicaton.yml or env var
+                    .system("You are a helpful data explorer that supports in extracting the relevant data from MCP services.")
                     .user(message)
                     .call()
                     .content();

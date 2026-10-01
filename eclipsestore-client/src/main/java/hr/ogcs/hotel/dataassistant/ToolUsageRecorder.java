@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestoreclient;
+package hr.ogcs.hotel.dataassistant;
 
 import java.util.ArrayList;
 import java.util.List;

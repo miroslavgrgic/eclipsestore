@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestoreclient;
+package hr.ogcs.hotel.dataassistant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

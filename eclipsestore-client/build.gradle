@@ -6,7 +6,7 @@ plugins {
 
 group = 'hr.ogcs'
 version = '0.0.1-SNAPSHOT'
-description = 'eclipsestore-mcp-client'
+description = 'hotel-data-assistant'
 
 java {
     toolchain {

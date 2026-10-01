@@ -1,4 +1,4 @@
-package hr.ogcs.eclipsestoreclient;
+package hr.ogcs.hotel.dataassistant.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
