@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Slf4j
 @Component
+@Slf4j
 public class HotelMcpTools {
 
     private final StorageService storageService;
@@ -82,7 +82,7 @@ public class HotelMcpTools {
                 .filter(b -> b.getGuests().stream().anyMatch(g -> g.getId().equals(guestId)))
                 .toList();
         var rooms = bookings.stream().map(Booking::getRoom).toList();
-        var payments = hotel.getPayments().values().stream().filter(payment -> bookings.contains(payment.booking())).toList();
+        var payments = hotel.getPayments().values().stream().filter(payment -> bookings.contains(payment.getBooking())).toList();
 
         log.info("getGuestKnowledge payload sent to MCP client: [guest={}, bookings={}, rooms={}, payments={}]",
                 guest, bookings, rooms, payments);

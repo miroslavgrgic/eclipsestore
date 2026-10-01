@@ -36,4 +36,9 @@ public class PaymentPortImpl implements PaymentPort {
         log.info("Called payment provider for Booking {}", booking);
     }
 
+    @Override
+    public UUID createPayment(Payment payment) {
+        return paymentService.createPayment(payment);
+    }
+
 }

@@ -13,6 +13,7 @@ import java.util.UUID;
 @Component
 public class GuestMcpTools {
 
+    // TODO read from application.yml
     private static final int DEFAULT_TOP_K = 5;
 
     private final GuestSearchService guestSearchService;
