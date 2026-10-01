@@ -36,6 +36,7 @@ def main() -> None:
     run("seed_rooms.py", args)
     run("seed_guests.py", args)
     run("seed_bookings.py", args)
+    run("seed_payments.py", args)
 
 
 if __name__ == "__main__":
