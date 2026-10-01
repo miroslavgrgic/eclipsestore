@@ -421,7 +421,9 @@
         });
 
         if (!response.ok) {
-          throw new Error('Request failed with status ' + response.status);
+          const detail = (await response.text()).trim();
+          const reason = detail ? ': ' + detail : '';
+          throw new Error('Request failed with status ' + response.status + reason);
         }
 
         const data = await response.json();

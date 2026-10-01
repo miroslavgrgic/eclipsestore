@@ -39,7 +39,7 @@ class HotelTest {
 
     @Test
     void should_return_all_hotel_guests() {
-        hotel.getGuests().addAll(createGuests());
+        hotel.getGuestMap().addAll(createGuests());
 
         assertEquals(2, hotel.getGuests().size());
     }

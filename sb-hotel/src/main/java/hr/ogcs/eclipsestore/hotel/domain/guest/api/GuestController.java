@@ -35,6 +35,12 @@ public class GuestController {
         return ResponseEntity.status(HttpStatus.OK).body(newGuest.getId());
     }
 
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Guest> updateGuest(@PathVariable UUID id, @RequestBody Guest guest) {
+        guest.setId(id);
+        return ResponseEntity.ok(guestPort.updateGuest(guest));
+    }
+
     @GetMapping
     public List<Guest> getAllGuests() {
         return guestPort.getAllGuests().stream()

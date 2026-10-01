@@ -24,7 +24,9 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	implementation 'org.eclipse.store:storage-embedded:4.0.1'
+	implementation 'org.eclipse.store:storage-embedded:4.2.0'
+	implementation 'org.eclipse.store:gigamap:4.2.0'
+	implementation 'org.eclipse.store:gigamap-jvector:4.2.0'
 
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
 
@@ -39,8 +41,21 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// gigamap-jvector's JVector engine uses the incubating java.lang.Vector SIMD API.
+// (gigamap-jvector's own build additionally opens/exports several java.base internals to its
+// "org.eclipse.serializer.base" module, but that only applies when running on the module path;
+// this app runs on the classpath, where jdk.incubator.vector alone is sufficient.)
+def jvectorJvmArgs = [
+	'--add-modules=jdk.incubator.vector',
+]
+
 tasks.named('test') {
 	useJUnitPlatform()
+	jvmArgs jvectorJvmArgs
+}
+
+tasks.named('bootRun') {
+	jvmArgs jvectorJvmArgs
 }
 
 dependencyManagement {

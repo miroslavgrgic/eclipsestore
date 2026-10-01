@@ -12,6 +12,7 @@ public record BookingSummary(
         UUID id,
         String roomName,
         List<String> guestNames,
+        UUID guestId,
         int guestCount,
         LocalDate from,
         LocalDate to,
@@ -19,10 +20,12 @@ public record BookingSummary(
         Booking.PaymentStatus paymentStatus) {
 
     static BookingSummary from(Booking booking) {
+        Guest booker = booking.getGuests().stream().filter(Guest::isTheBooker).findFirst().orElse(null);
         return new BookingSummary(
                 booking.getId(),
                 booking.getRoom() != null ? booking.getRoom().getName() : null,
                 booking.getGuests().stream().map(Guest::getFullName).toList(),
+                (booker != null ? booker.getId() : null),
                 booking.getGuests().size(),
                 booking.getFrom(),
                 booking.getTo(),

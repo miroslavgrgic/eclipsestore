@@ -8,8 +8,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.eclipse.serializer.reference.Lazy;
+import org.eclipse.store.gigamap.types.GigaMap;
 
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 @Getter
 public class Hotel {
@@ -19,7 +21,7 @@ public class Hotel {
     private final boolean acceptsCreditCards;
 
     public Hotel(String name, boolean acceptsCreditCards) {
-        this(name, acceptsCreditCards, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+        this(name, acceptsCreditCards, new ArrayList<>(), List.of(), new ArrayList<>(), new HashMap<>());
     }
 
     // Builds an in-memory, non-persisted view of the hotel restricted to the given child
@@ -29,7 +31,8 @@ public class Hotel {
         this.name = name;
         this.acceptsCreditCards = acceptsCreditCards;
         this.rooms = rooms;
-        this.guests = guests;
+        this.guests = GigaMap.New();
+        this.guests.addAll(guests);
         this.bookings = bookings;
         this.payments = Lazy.Reference(payments);
     }
@@ -37,9 +40,20 @@ public class Hotel {
     // Our Domain Model
     // this is a "has" relation in Graph theorem
     private final List<Room> rooms;
-    // TODO create annotation that describes another graph relation type, like "belongs to"
-    private final List<Guest> guests;
     private final List<Booking> bookings;
+
+    // GigaMap is the source of truth for guests: it carries the JVector similarity index,
+    // which is only kept in sync for entities added/updated/removed through the map itself.
+    @Getter(AccessLevel.NONE)
+    private final GigaMap<Guest> guests;
+
+    public List<Guest> getGuests() {
+        return StreamSupport.stream(guests.spliterator(), false).toList();
+    }
+
+    public GigaMap<Guest> getGuestMap() {
+        return guests;
+    }
 
     // Still Domain model, but enriching by technical key for easier access
     // Lazily loaded: the payments map is only fetched from storage on first access

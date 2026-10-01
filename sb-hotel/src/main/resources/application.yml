@@ -10,5 +10,5 @@ spring:
         protocol: stateless
 
 eclipsestore:
-  path: ${ES_PATH:sb-hotel/database}
+  path: ${ES_PATH:sb-hotel/database-vector}
 

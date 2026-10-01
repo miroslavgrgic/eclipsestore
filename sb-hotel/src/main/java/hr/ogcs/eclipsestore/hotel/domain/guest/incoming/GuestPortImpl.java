@@ -36,6 +36,11 @@ public class GuestPortImpl implements GuestPort {
     }
 
     @Override
+    public Guest updateGuest(Guest guest) {
+        return guestService.updateGuest(guest);
+    }
+
+    @Override
     public void deleteGuestByID(UUID id) {
         guestService.deleteGuestByID(id);
     }
