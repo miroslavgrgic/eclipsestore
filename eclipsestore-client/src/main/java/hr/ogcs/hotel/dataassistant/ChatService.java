@@ -29,6 +29,9 @@ public class ChatService {
         }
     }
 
-    public record ChatAnswer(String reply, List<String> usedTools) {
+    public record ChatAnswer(String reply, List<ToolCall> toolCalls) {
+        public List<String> usedTools() {
+            return toolCalls.stream().map(ToolCall::name).toList();
+        }
     }
 }

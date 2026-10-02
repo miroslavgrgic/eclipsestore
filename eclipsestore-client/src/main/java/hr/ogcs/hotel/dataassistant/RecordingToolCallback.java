@@ -31,13 +31,15 @@ public class RecordingToolCallback implements ToolCallback {
 
     @Override
     public String call(String toolInput) {
-        ToolUsageRecorder.record(delegate.getToolDefinition().name());
-        return delegate.call(toolInput);
+        String output = delegate.call(toolInput);
+        ToolUsageRecorder.record(delegate.getToolDefinition().name(), toolInput, output);
+        return output;
     }
 
     @Override
     public String call(String toolInput, @Nullable ToolContext toolContext) {
-        ToolUsageRecorder.record(delegate.getToolDefinition().name());
-        return delegate.call(toolInput, toolContext);
+        String output = delegate.call(toolInput, toolContext);
+        ToolUsageRecorder.record(delegate.getToolDefinition().name(), toolInput, output);
+        return output;
     }
 }
