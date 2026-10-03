@@ -105,5 +105,20 @@ public class HotelMcpTools {
 
     public record BookingKnowledgeDTO(Booking booking) {}
 
+    @Tool(name = "getHotelStatistics", description = "Query statistics about the hotel's entities: " +
+            "the total number of guests, rooms, bookings and payments.")
+    public HotelStatisticsDTO getHotelStatistics() {
+        Hotel hotel = storageService.hotel;
+        var statistics = new HotelStatisticsDTO(
+                hotel.getGuests().size(),
+                hotel.getRooms().size(),
+                hotel.getBookings().size(),
+                hotel.getPayments().size());
+
+        log.info("getHotelStatistics payload sent to MCP client: [statistics={}]", statistics);
+        return statistics;
+    }
+
+    public record HotelStatisticsDTO(int guests, int rooms, int bookings, int payments) {}
 
 }
