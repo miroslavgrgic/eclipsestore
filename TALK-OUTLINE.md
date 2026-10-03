@@ -26,17 +26,6 @@
 
 ---
 
-## TODO before you hand this off
-
-- [ ] Fill in your name/title/bio on the title slide
-- [ ] Decide which parts are live demo vs recorded screenshots (recommend:
-      record a backup video, demo live if confident)
-- [ ] Add real screenshots of the chat UI once the flow is finalized
-- [ ] Fill in resource links at the end (repo URL, EclipseStore/GigaMap docs)
-- [ ] Cut slides if your slot is shorter than ~30 min (mark optional ones below)
-
----
-
 ## 1. Title slide
 
 **Beyond Rows and Documents**
@@ -52,9 +41,7 @@ EclipseStore as a Vector Database — and a Graph Database Killer
 
 ## 2. Who am I
 
-- [Your name, role, company]
-- [What you do with EclipseStore / Java persistence day to day]
-- [Optional: why this topic — personal curiosity, a real project pain point]
+- Miki
 
 > Speaker notes: Keep this under 30 seconds. Conference audiences want you to
 > get to the point.
@@ -429,8 +416,8 @@ dashed "sync / refresh" arrows
 ## 20. The MCP layer: why it matters for this demo
 
 - MCP tools are how the LLM chat agent queries both the vector index and the
-  graph — `findSimilarGuests`, `searchGuestsByProfile`, `getBookings`,
-  `getPayments`
+  graph — `findSimilarGuests`, `searchGuestsByProfile`, `getBookingKnowledge`,
+  `getGuestKnowledge`, `getPayments`, `getBookings`
 - The chat UI shows **which MCP tool was called** for each answer — makes
   the "vector search" vs "graph traversal" distinction visible to the
   audience in real time
