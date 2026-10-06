@@ -2,58 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hotel Data Assistant</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/standalone/umd/vis-network.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="page">
-    <div class="brand">
-      <svg class="logo-badge" width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hotel Data Assistant logo">
-        <defs>
-          <linearGradient id="logoGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#6366f1"/>
-            <stop offset="55%" stop-color="#a855f7"/>
-            <stop offset="100%" stop-color="#ec4899"/>
-          </linearGradient>
-        </defs>
-        <rect width="64" height="64" rx="18" fill="url(#logoGrad)"/>
-        <path d="M32 14c-8.3 0-15 6.7-15 15v7.5l-4.5 7.5h39l-4.5-7.5V29c0-8.3-6.7-15-15-15z" fill="#ffffff"/>
-        <circle cx="32" cy="11" r="3" fill="#ffffff"/>
-        <circle cx="32" cy="47" r="3" fill="#ffffff"/>
-        <path d="M50 6l1.8 4.9 4.9 1.8-4.9 1.8L50 19.4l-1.8-4.9-4.9-1.8 4.9-1.8z" fill="#fde68a"/>
-      </svg>
-      <h1 class="brand-title">Hotel Data Assistant</h1>
-      <p class="brand-subtitle">MCP Client</p>
-    </div>
-
-    <div class="app">
-      <header>
-        <p>Ask questions about bookings &mdash; e.g. "Which 3 bookings in April 2026 had the most guests?"</p>
-      </header>
-      <div id="messages"></div>
-      <form id="chat-form">
-        <input type="text" id="chat-input" placeholder="Ask about bookings..." autocomplete="off" autofocus />
-        <button type="submit" id="chat-submit">Send</button>
-      </form>
-      <details id="tools-panel">
+  <div class="app">
+    <aside class="rail">
+      <div class="brand">
+        <div class="logo-badge" role="img" aria-label="Hotel Data Assistant logo">H</div>
+        <div class="brand-text">
+          <h1 class="brand-title">Hotel Data Assistant</h1>
+          <p class="brand-subtitle">MCP Client</p>
+        </div>
+      </div>
+      <details id="tools-panel" open>
         <summary>Available MCP tools</summary>
         <div id="tools-list"></div>
       </details>
-      <details id="graph-panel">
-        <summary>Data graph</summary>
-        <div id="graph-legend"></div>
-        <div id="graph-container"></div>
-        <div id="graph-empty"></div>
-      </details>
-    </div>
+      <div class="col-resizer" data-col="rail" role="separator" aria-orientation="vertical" aria-label="Resize tools panel" tabindex="0"></div>
+    </aside>
+
+    <main class="chat">
+      <header class="intro">
+        <h2>What would you like to know about your bookings?</h2>
+        <p>Answers come from the hotel database through MCP tools. Each reply lists the tools it called.</p>
+        <div class="suggestions">
+          <button type="button" class="suggestion">Which 3 bookings in April 2026 had the most guests?</button>
+          <button type="button" class="suggestion">Which payments are still open?</button>
+          <button type="button" class="suggestion">Find guests similar to our most frequent guest</button>
+        </div>
+      </header>
+      <div id="messages"></div>
+      <div class="composer">
+        <form id="chat-form">
+          <input type="text" id="chat-input" placeholder="Ask about bookings..." autocomplete="off" autofocus />
+          <button type="submit" id="chat-submit">Send</button>
+        </form>
+        <p class="composer-note">Answers are generated from MCP tool results. Check important figures.</p>
+      </div>
+    </main>
+
+    <details id="graph-panel">
+      <summary>Data graph</summary>
+      <div class="col-resizer" data-col="graph" role="separator" aria-orientation="vertical" aria-label="Resize data graph panel" tabindex="0"></div>
+      <div id="graph-legend"></div>
+      <div id="graph-container"></div>
+      <div id="graph-empty"></div>
+    </details>
   </div>
 
-  <script src="app.js"></script>
+  <script src="Hotel%20data%20assistant%20redesign2/app.js"></script>
+  <script src="resize.js"></script>
+  <script>
+    document.querySelectorAll('.suggestion').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.getElementById('chat-input').value = btn.textContent;
+        document.getElementById('chat-form').requestSubmit();
+      });
+    });
+  </script>
 </body>
 </html>
