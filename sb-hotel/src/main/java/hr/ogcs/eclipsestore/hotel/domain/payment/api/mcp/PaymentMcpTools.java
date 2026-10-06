@@ -28,9 +28,9 @@ public class PaymentMcpTools {
             "Returns, for each payment, the room name, guest names and guest count, stay dates, price and payment status. " +
             "Use this to answer questions about payments, e.g. which bookings are still not paid.")
     public Map<UUID, PaymentSummary> getPayments(
-            @ToolParam(description = "Only include payments whose stay ends on or after this date (inclusive). Omit for no lower bound.", required = false)
+            @ToolParam(description = "Only include payments whose stay ends on or after this date (inclusive). Omit for no lower bound. Format yyyy-mm-dd", required = false)
             LocalDate from,
-            @ToolParam(description = "Only include payments whose stay starts on or before this date (inclusive). Omit for no upper bound.", required = false)
+            @ToolParam(description = "Only include payments whose stay starts on or before this date (inclusive). Omit for no upper bound. Format yyyy-mm-dd", required = false)
             LocalDate to) {
 
         return paymentPort.getAllPayments().entrySet().stream()
