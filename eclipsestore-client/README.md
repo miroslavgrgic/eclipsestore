@@ -1,18 +1,13 @@
-# Getting Started
+# The Hotel's MCP Client
 
-### Reference Documentation
+A demo Hotel Data Chat Assistant that enables requesting data from an MCP server using MCP tools.
 
-For further reference, please consider the following sections:
+## The UI and the MCP client
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/4.1.1/gradle-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/4.1.1/gradle-plugin/packaging-oci-image.html)
-* [Model Context Protocol Client](https://docs.spring.io/spring-ai/reference/api/mcp/mcp-client-boot-starter-docs.html)
-* [OpenAI](https://docs.spring.io/spring-ai/reference/api/chat/openai-chat.html)
+```bash
+./gradlew bootRun
+```
 
-### Additional Links
+App: http://localhost:8081
 
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
+!Client fails starting when MCP server is not available. On purpose.
