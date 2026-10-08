@@ -16,10 +16,22 @@ import java.util.stream.StreamSupport;
 @Getter
 public class Hotel {
 
+    // Our Domain Model
+    // this is a "has" relation in Graph theorem
+    private final List<Room> rooms;
+    private final List<Booking> bookings;
+    // GigaMap is the source of truth for guests: it carries the JVector similarity index,
+    // which is only kept in sync for entities added/updated/removed through the map itself.
+    private final GigaMap<Guest> guests;
+    // Still Domain model, but enriching by technical key for easier access
+    // Lazily loaded: the payments map is only fetched from storage on first access
+    private final Lazy<Map<UUID, Payment>> payments;
+
     private final String name;
     @Accessors(fluent = true)
     private final boolean acceptsCreditCards;
 
+    // Constructors
     public Hotel(String name, boolean acceptsCreditCards) {
         this(name, acceptsCreditCards, new ArrayList<>(), List.of(), new ArrayList<>(), new HashMap<>());
     }
@@ -37,39 +49,23 @@ public class Hotel {
         this.payments = Lazy.Reference(payments);
     }
 
-    // Our Domain Model
-    // this is a "has" relation in Graph theorem
-    private final List<Room> rooms;
-    private final List<Booking> bookings;
-
-    // GigaMap is the source of truth for guests: it carries the JVector similarity index,
-    // which is only kept in sync for entities added/updated/removed through the map itself.
-    @Getter(AccessLevel.NONE)
-    private final GigaMap<Guest> guests;
 
     public List<Guest> getGuests() {
         return StreamSupport.stream(guests.spliterator(), false).toList();
     }
-
     public GigaMap<Guest> getGuestMap() {
         return guests;
     }
-
-    // Still Domain model, but enriching by technical key for easier access
-    // Lazily loaded: the payments map is only fetched from storage on first access
-    @Getter(AccessLevel.NONE)
-    private final Lazy<Map<UUID, Payment>> payments;
-
     public Map<UUID, Payment> getPayments() {
         return payments.get();
     }
 
+    // Domain logic
     public boolean isHandicapFriendlyHotel() {
         return rooms.stream()
                 .filter(Room::canBeUsedWithHandicaps)
                 .count() > 2;
     }
-
     // TODO implement some more Hotel domain related methods
 
 }
