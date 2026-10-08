@@ -279,15 +279,20 @@ function buildGraph(toolCalls) {
 function nodeTooltip(node) {
   const lines = [node.label];
   const d = node.details || {};
-  if (node.group === 'guest' && d.age !== undefined) lines.push(`Age: ${d.age}`);
+  if (node.group === 'guest' && d.age !== undefined) {
+      lines.push(`Age: ${d.age}`);
+      lines.push(`Id: ${d.id}`);
+  }
   if (node.group === 'booking') {
     if (d.from && d.to) lines.push(`${d.from} → ${d.to}`);
     if (d.price !== undefined) lines.push(`Price: ${formatMoney(d.price)}`);
     if (d.paymentStatus) lines.push(`Status: ${d.paymentStatus}`);
+    lines.push(`Id: ${d.id}`);
   }
   if (node.group === 'payment') {
     if (d.price !== undefined) lines.push(`Price: ${formatMoney(d.price)}`);
     if (d.paymentProviderId) lines.push(`Provider: ${d.paymentProviderId}`);
+      lines.push(`Id: ${d.id}`);
   }
   if (node.group === 'room' && d.defaultPrice !== undefined) lines.push(`Price: ${formatMoney(d.defaultPrice)}`);
   return lines.join('\n');
