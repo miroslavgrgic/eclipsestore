@@ -11,10 +11,7 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -58,9 +55,9 @@ public class HotelMcpTools {
 
         Hotel hotel = storageService.hotel;
 
-        List<Room> rooms = roomCriteria != null ? EntityFilter.filter(hotel.getRooms(), roomCriteria) : null;
-        List<Guest> guests = guestCriteria != null ? EntityFilter.filter(hotel.getGuests(), guestCriteria) : null;
-        List<Booking> bookings = bookingCriteria != null ? EntityFilter.filter(hotel.getBookings(), bookingCriteria) : null;
+        List<Room> rooms = roomCriteria != null ? EntityFilter.filter(hotel.getRooms(), roomCriteria) : new ArrayList<>();
+        List<Guest> guests = guestCriteria != null ? EntityFilter.filter(hotel.getGuests(), guestCriteria) : new ArrayList<>();
+        List<Booking> bookings = bookingCriteria != null ? EntityFilter.filter(hotel.getBookings(), bookingCriteria) : new ArrayList<>();
         Map<UUID, Payment> payments = paymentCriteria != null ? EntityFilter.filterValues(hotel.getPayments(), paymentCriteria) : new HashMap<>();
 
         Hotel filteredHotel = new Hotel(hotel.getName(), hotel.acceptsCreditCards(),
