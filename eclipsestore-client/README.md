@@ -10,4 +10,4 @@ A demo Hotel Data Chat Assistant that enables requesting data from an MCP server
 
 App: http://localhost:8081
 
-!Client fails starting when MCP server is not available. On purpose.
+! Client fails starting when MCP server is not available. On purpose.

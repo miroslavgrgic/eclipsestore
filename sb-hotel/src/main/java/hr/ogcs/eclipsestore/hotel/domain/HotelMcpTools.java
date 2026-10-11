@@ -11,6 +11,7 @@ import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,14 +58,14 @@ public class HotelMcpTools {
 
         Hotel hotel = storageService.hotel;
 
-        List<Guest> guests = EntityFilter.filter(hotel.getGuests(), guestCriteria);
-        List<Room> rooms = EntityFilter.filter(hotel.getRooms(), roomCriteria);
-        List<Booking> bookings = EntityFilter.filter(hotel.getBookings(), bookingCriteria);
-        Map<UUID, Payment> payments = EntityFilter.filterValues(hotel.getPayments(), paymentCriteria);
+        List<Room> rooms = roomCriteria != null ? EntityFilter.filter(hotel.getRooms(), roomCriteria) : null;
+        List<Guest> guests = guestCriteria != null ? EntityFilter.filter(hotel.getGuests(), guestCriteria) : null;
+        List<Booking> bookings = bookingCriteria != null ? EntityFilter.filter(hotel.getBookings(), bookingCriteria) : null;
+        Map<UUID, Payment> payments = paymentCriteria != null ? EntityFilter.filterValues(hotel.getPayments(), paymentCriteria) : new HashMap<>();
 
-        // TODO when criteria is null than entities must be null!
-// prompt: any guest from Spain? result will include all guests!!! can be cool, but if huge number: critical payload size!
-        Hotel filteredHotel = new Hotel(hotel.getName(), hotel.acceptsCreditCards(), rooms, guests, bookings, payments);
+        Hotel filteredHotel = new Hotel(hotel.getName(), hotel.acceptsCreditCards(),
+                rooms, guests, bookings, payments
+        );
 
         long durationMs = System.currentTimeMillis() - startTime;
         log.info("getFilteredHotel resolved in {} ms, payload sent to MCP client: [rooms={}, guests={}, bookings={}, payments={}]",
