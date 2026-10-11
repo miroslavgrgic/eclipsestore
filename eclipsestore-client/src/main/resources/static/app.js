@@ -292,7 +292,6 @@ function nodeTooltip(node) {
   if (node.group === 'payment') {
     if (d.price !== undefined) lines.push(`Price: ${formatMoney(d.price)}`);
     if (d.paymentProviderId) lines.push(`Provider: ${d.paymentProviderId}`);
-      lines.push(`Id: ${d.id}`);
   }
   if (node.group === 'room' && d.defaultPrice !== undefined) lines.push(`Price: ${formatMoney(d.defaultPrice)}`);
   return lines.join('\n');
@@ -359,12 +358,27 @@ function renderGraph(toolCalls) {
     physics: { solver: 'forceAtlas2Based', forceAtlas2Based: { springLength: 120, avoidOverlap: 0.6 }, stabilization: { iterations: stabilizationIterations } },
     nodes: { font: { color: '#1d1d1f', size: 12, face: 'Barlow, sans-serif' }, borderWidth: 2 },
   });
-  graphNetwork.once('stabilizationIterationsDone', () => graphNetwork && graphNetwork.setOptions({ physics: false }));
+  graphNetwork.once('stabilizationIterationsDone', () => {
+    if (!graphNetwork) return;
+    graphNetwork.setOptions({ physics: false });
+    graphNetwork.fit({ animation: false });
+  });
 }
 
+// The network may be built while the panel is collapsed (zero-size
+// container), which leaves the viewport off-center - re-fit once visible.
+graphPanelEl.addEventListener('toggle', () => {
+  if (!graphPanelEl.open || !graphNetwork) return;
+  requestAnimationFrame(() => {
+    if (!graphNetwork) return;
+    graphNetwork.redraw();
+    graphNetwork.fit({ animation: false });
+  });
+});
+
 function showGraphFor(toolCalls) {
-  renderGraph(toolCalls);
   graphPanelEl.open = true;
+  renderGraph(toolCalls);
   graphPanelEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
