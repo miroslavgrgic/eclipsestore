@@ -23,12 +23,6 @@ public class HotelMcpTools {
         this.storageService = storageService;
     }
 
-    // TODO: remove it! This Tool delivers to much data for the LLM context!
-    // @Tool(name = "getHotel", description = "Query the whole hotel domain including bookings, guests, rooms, payments.")
-    public Hotel getCompleteHotel() {
-        return storageService.hotel;
-    }
-
     @Tool(name = "getFilteredHotel", description = "Query the hotel's data restricted to the bookings, guests, rooms and payments matching the " +
             "given criteria. Each criteria map's keys are the filterable field names of the corresponding entity. Suffix a key with " +
             "'_gte' or '_lte' to filter numeric/date fields by range, '_contains' for a case-insensitive substring match on text fields, " +
@@ -74,13 +68,17 @@ public class HotelMcpTools {
     @Tool(name = "getGuestKnowledge", description = "Query all information about a dedicated guest including bookings, rooms, payments.")
     public GuestKnowledgeDTO getGuestKnowledge(
             @ToolParam(description = "The guest's UUID.") UUID guestId) {
+
         Hotel hotel = storageService.hotel;
-        var guest = hotel.getGuests().stream().filter(g -> g.getId().equals(guestId)).findFirst().orElseThrow(IllegalArgumentException::new);
+
+        var guest = hotel.getGuests().stream()
+                .filter(g -> g.getId().equals(guestId)).findFirst().orElseThrow(IllegalArgumentException::new);
         var bookings = hotel.getBookings().stream()
                 .filter(b -> b.getGuests().stream().anyMatch(g -> g.getId().equals(guestId)))
                 .toList();
         var rooms = bookings.stream().map(Booking::getRoom).toList();
-        var payments = hotel.getPayments().values().stream().filter(payment -> bookings.contains(payment.getBooking())).toList();
+        var payments = hotel.getPayments().values().stream()
+                .filter(payment -> bookings.contains(payment.getBooking())).toList();
 
         log.info("getGuestKnowledge payload sent to MCP client: [guest={}, bookings={}, rooms={}, payments={}]",
                 guest, bookings, rooms, payments);
@@ -92,7 +90,9 @@ public class HotelMcpTools {
     @Tool(name = "getBookingKnowledge", description = "Query all information about a dedicated booking including guests, rooms, payments.")
     public BookingKnowledgeDTO getBookingKnowledge(
             @ToolParam(description = "The booking's UUID.") UUID bookingId) {
+
         Hotel hotel = storageService.hotel;
+
         var booking = hotel.getBookings().stream()
                 .filter(b -> b.getId().equals(bookingId)).findFirst()
                 .orElseThrow(IllegalArgumentException::new);

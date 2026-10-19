@@ -60,8 +60,8 @@ public class GuestSearchService {
                 .toList();
     }
 
-    public List<GuestMatch> searchByProfile(Guest queryProfile, int topK) {
-        float[] queryVector = new GuestVectorizer().vectorize(queryProfile);
+    public List<GuestMatch> searchByProfile(Guest guestProfile, int topK) {
+        float[] queryVector = new GuestVectorizer().vectorize(guestProfile);
         return index.search(queryVector, topK).stream()
                 .map(entry -> new GuestMatch(entry.entity(), entry.score()))
                 .toList();
