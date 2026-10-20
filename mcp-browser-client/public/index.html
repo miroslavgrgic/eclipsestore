@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCP Browser Client</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="rail">
+      <div class="brand">
+        <div class="logo-badge" role="img" aria-label="MCP Browser Client logo">M</div>
+        <div class="brand-text">
+          <h1 class="brand-title">MCP Browser Client</h1>
+          <p class="brand-subtitle">Local AI · Transformer.js</p>
+        </div>
+      </div>
+      <section class="status-panel" aria-label="Connection status">
+        <div class="status-row">
+          <span class="status-dot" id="mcp-dot" data-state="pending"></span>
+          <span class="status-label">MCP server</span>
+          <span class="status-value" id="mcp-status">connecting…</span>
+        </div>
+        <div class="status-row">
+          <span class="status-dot" id="model-dot" data-state="pending"></span>
+          <span class="status-label">Model</span>
+          <span class="status-value" id="model-status">not loaded</span>
+        </div>
+        <div class="model-progress" id="model-progress" hidden><div class="model-progress-bar"></div></div>
+        <select id="model-select" aria-label="Local model"></select>
+      </section>
+      <details id="tools-panel" open>
+        <summary>Available MCP tools</summary>
+        <div id="tools-list"></div>
+      </details>
+      <div class="col-resizer" data-col="rail" role="separator" aria-orientation="vertical" aria-label="Resize tools panel" tabindex="0"></div>
+    </aside>
+
+    <main class="chat">
+      <header class="intro">
+        <h2>What would you like to explore?</h2>
+        <p>Talks to the MCP server directly from your browser. A local language model (Transformer.js) picks the tools and writes the answers, and no external AI provider is involved.</p>
+        <div class="suggestions">
+          <button type="button" class="suggestion">How many guests, rooms and bookings does the hotel have?</button>
+          <button type="button" class="suggestion">Which bookings in March 2026 are still not paid?</button>
+          <button type="button" class="suggestion">Find guests around 35 years old living in Berlin</button>
+        </div>
+      </header>
+      <div id="messages"></div>
+      <div class="composer">
+        <form id="chat-form">
+          <input type="text" id="chat-input" placeholder="Ask a question about the MCP server's data..." autocomplete="off" autofocus />
+          <button type="submit" id="chat-submit">Send</button>
+        </form>
+        <p class="composer-note">The model runs locally in your browser. Small models make mistakes, so check the tool badges and the data graph.</p>
+      </div>
+    </main>
+
+    <details id="graph-panel">
+      <summary>Data graph</summary>
+      <div class="col-resizer" data-col="graph" role="separator" aria-orientation="vertical" aria-label="Resize data graph panel" tabindex="0"></div>
+      <div id="graph-legend"></div>
+      <div id="graph-container"></div>
+      <div id="graph-empty"></div>
+    </details>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  <script src="resize.js"></script>
+</body>
+</html>

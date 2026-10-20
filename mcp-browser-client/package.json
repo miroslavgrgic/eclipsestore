@@ -1,0 +1,13 @@
+{
+  "name": "mcp-browser-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Browser based MCP client with a local Transformer.js model",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
