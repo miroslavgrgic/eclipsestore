@@ -5,7 +5,8 @@
   "description": "Browser based MCP client with a local Transformer.js model",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
   "engines": {
     "node": ">=20"

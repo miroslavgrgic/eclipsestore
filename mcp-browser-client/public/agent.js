@@ -8,15 +8,10 @@
 import { toolResultText } from './mcp.js';
 
 const MAX_STEPS = 4;
-// Prompts must stay short: besides being slow, prompts of roughly 3000+
-// tokens make the WebGPU runtime fail (it returns the logits of every prompt
-// position, which outgrows the mappable buffer size). The tool definitions
-// alone take ~1500 tokens. So only this much of a tool result is shown to the
-// model (the full payload still goes to the data graph), and only a short
-// history is kept.
+// Small models get slow and lose track on long prompts - only this much of a
+// tool result is shown to the model (the full payload still goes to the data
+// graph).
 const MAX_TOOL_RESULT_CHARS = 3000;
-const MAX_HISTORY_TURNS = 2;
-const MAX_HISTORY_MESSAGE_CHARS = 600;
 
 export function systemPrompt(serverName, instructions) {
   const today = new Date().toISOString().slice(0, 10);
@@ -53,6 +48,8 @@ export function stripThinking(text) {
 // first tool call, without reasoning blocks.
 export function visibleText(text) {
   const withoutThinking = stripThinking(text);
+  // Bare JSON tool call (Llama style)
+  if (/^\s*\{\s*"name"/.test(withoutThinking)) return '';
   const start = withoutThinking.indexOf('<tool_call>');
   return (start === -1 ? withoutThinking : withoutThinking.slice(0, start)).trim();
 }
@@ -96,23 +93,24 @@ function truncate(text, max) {
  *
  * @param {object} options
  * @param {string} options.message      the user's question
- * @param {Array}  options.history      earlier [{role, content}] turns (user / assistant only)
  * @param {Array}  options.tools        MCP tool descriptors (from tools/list)
  * @param {string} options.system       system prompt
  * @param {Function} options.generate   async (messages, toolDefinitions, onToken, prefill) => generated text
  *                                      (prefill: text the reply must start with; not part of the returned text)
  * @param {Function} options.callTool   async (name, args) => MCP tools/call result
  * @param {Function} [options.onEvent]  progress callback: {type: 'tool-start' | 'tool-end' | 'token', ...}
- * @param {boolean} [options.forceFirstToolCall]  start the first reply with <tool_call> - small models
- *                                      otherwise tend to answer data questions from imagination
+ * @param {string} [options.toolCallPrefill]  start the first reply with this text (the opening of a
+ *                                      tool call in the model's format, e.g. "<tool_call>\n") - small
+ *                                      models otherwise tend to answer data questions from imagination
  * @returns {Promise<{reply: string, usedTools: string[], toolCalls: Array}>}
  */
-export async function runAgent({ message, history, tools, system, generate, callTool, onEvent = () => {}, forceFirstToolCall = false }) {
+// Every question is answered on its own: earlier questions and answers are
+// not part of the prompt.
+export async function runAgent({ message, tools, system, generate, callTool, onEvent = () => {}, toolCallPrefill = '' }) {
   const toolDefinitions = toToolDefinitions(tools);
   const toolNames = new Set(tools.map(tool => tool.name));
   const messages = [
     { role: 'system', content: system },
-    ...history.slice(-MAX_HISTORY_TURNS * 2).map(turn => ({ ...turn, content: truncate(turn.content, MAX_HISTORY_MESSAGE_CHARS) })),
     { role: 'user', content: message },
   ];
   const usedTools = [];
@@ -125,7 +123,7 @@ export async function runAgent({ message, history, tools, system, generate, call
 
   for (let step = 0; step < MAX_STEPS; step++) {
     const offeredTools = step === MAX_STEPS - 1 || toolsWithheld ? [] : toolDefinitions;
-    const prefill = step === 0 && forceFirstToolCall && offeredTools.length > 0 ? '<tool_call>\n' : '';
+    const prefill = step === 0 && offeredTools.length > 0 ? toolCallPrefill : '';
     let streamed = prefill;
     const onToken = token => {
       onEvent({ type: 'token', text: streamed + token });

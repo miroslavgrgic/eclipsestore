@@ -22,7 +22,11 @@ Browser ────────────────────────
 # 2. start the client (Node >= 20, no npm install needed)
 cd mcp-browser-client
 npm start                          # http://localhost:3000
+npm run dev                        # same, but restarts when server.js changes
 ```
+
+Files in `public/` are read from disk on every request, so a browser reload is enough to pick up
+frontend changes, in both modes.
 
 Environment variables for `server.js`:
 
@@ -51,8 +55,9 @@ MCP server that does allow CORS, open `http://localhost:3000/?mcp=http://host:po
    - A tool error asks the model to fix its arguments and call the tool again.
    - After a successful call, or when the model starts repeating a call, the tools are withheld so that
      the model has to answer from the results. This also makes the prompt ~1,500 tokens shorter.
-   - The model sees at most 3,000 characters of each tool result and the last 2 turns of history.
-     The data graph gets the full payload.
+   - The model sees at most 3,000 characters of each tool result. The data graph gets the full payload.
+   - Every question is answered on its own: earlier questions and answers are not passed to the model,
+     so a follow-up has to repeat what it refers to (e.g. a guest's name or id).
 
 ## Models
 
@@ -64,8 +69,15 @@ MCP server that does allow CORS, open `http://localhost:3000/?mcp=http://host:po
 | Qwen2.5 1.5B, `q4f16`            | 1.2 GB       | output is only `!!!!` (fp16 overflow)                              |
 | Qwen2.5 1.5B, `q4`               | 1.8 GB       | does not load: `std::bad_alloc`                                    |
 | Qwen3 1.7B, `q4f16`              | 1.4 GB       | does not load: `std::bad_alloc` (also on Transformers.js 3.8.1)    |
+| Llama 3.2 1B Instruct, `q4f16`   | 1.1 GB       | offered, untested                                                  |
+| Llama 3.2 3B Instruct, `q4f16`   | 2.4 GB       | offered, untested (needs a strong GPU)                             |
+| Qwen3 4B, `q4f16`                | 2.8 GB       | offered, untested (needs a strong GPU)                             |
 
-Weights of about 1.4 GB and more don't fit into the browser's WASM memory, even on WebGPU. In Node, the
+Single-file weights of about 1.4 GB and more don't load in the browser, even on WebGPU. The
+untested larger models ship their weights as external data files instead, the format Hugging Face's
+WebGPU demos use for models of that size. Whether they load depends on the GPU memory. Llama models
+emit tool calls as bare JSON (`{"name": …, "parameters": …}`) instead of `<tool_call>` tags. Each
+model entry in `app.js` sets the matching `toolCallPrefill`. In Node, the
 larger Qwen2.5 1.5B (`q4`) handles the tools well. Override the automatic choice with
 `?device=webgpu|wasm` and `?dtype=q4|q4f16|q8|fp16`.
 

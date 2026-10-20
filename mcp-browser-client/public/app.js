@@ -28,11 +28,26 @@ const DTYPE_OVERRIDE = params.get('dtype');
 
 // Chat models with tool calling support in their chat template, available
 // as ONNX builds for Transformer.js.
+//   webgpuDtype      weight format on WebGPU (default q4, see llm-worker.js)
+//   toolCallPrefill  opening of a tool call in the model's own format; the
+//                    first reply is forced to start with it, so the model
+//                    looks the data up instead of inventing an answer
+//   templateOptions  extra chat template variables
+//   modelOptions     extra from_pretrained() options
+const QWEN_TOOL_CALL = '<tool_call>\n';
+const LLAMA_TOOL_CALL = '{"name": "';
 const MODELS = [
-  { id: 'onnx-community/Qwen3-0.6B-ONNX', label: 'Qwen3 0.6B', webgpuDtype: 'q4f16', templateOptions: { enable_thinking: false } },
-  { id: 'onnx-community/Qwen2.5-0.5B-Instruct', label: 'Qwen2.5 0.5B Instruct' },
-  // Larger models don't fit into browser memory (std::bad_alloc from about
-  // 1.4 GB of weights) or misbehave in fp16 - see README.
+  { id: 'onnx-community/Qwen3-0.6B-ONNX', label: 'Qwen3 0.6B', webgpuDtype: 'q4f16', toolCallPrefill: QWEN_TOOL_CALL, templateOptions: { enable_thinking: false } },
+  { id: 'onnx-community/Qwen2.5-0.5B-Instruct', label: 'Qwen2.5 0.5B Instruct', toolCallPrefill: QWEN_TOOL_CALL },
+  // For machines with a strong GPU - not tested. Their weights come as
+  // external data files (the format Hugging Face's WebGPU demos use for
+  // models of this size), split into the given number of chunks.
+  { id: 'onnx-community/Llama-3.2-1B-Instruct-ONNX', label: 'Llama 3.2 1B Instruct (1.1 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 1 } },
+  { id: 'onnx-community/Llama-3.2-3B-Instruct-ONNX', label: 'Llama 3.2 3B Instruct (2.4 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 2 } },
+  { id: 'onnx-community/Qwen3-4B-ONNX', label: 'Qwen3 4B (2.8 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: QWEN_TOOL_CALL, templateOptions: { enable_thinking: false }, modelOptions: { use_external_data_format: 2 } },
+  // Not offered: Qwen2.5 1.5B and Qwen3 1.7B ship as single files of 1.4 GB
+  // and more, which fail to load in the browser (std::bad_alloc), and
+  // Qwen2.5 breaks with fp16 weights - see README.
 ];
 const MODEL_STORAGE_KEY = 'mcp-browser-client.model';
 
@@ -160,6 +175,7 @@ function renderToolsError(err) {
 
 const worker = new Worker(new URL('./llm-worker.js', import.meta.url), { type: 'module' });
 let modelReady = null;
+let currentModel = null;
 let modelLoading = false;
 let modelFailed = false;
 let resolveModelReady = null;
@@ -209,6 +225,7 @@ worker.addEventListener('message', ({ data }) => {
 
 function loadModel(modelId) {
   const entry = MODELS.find(model => model.id === modelId) || MODELS[0];
+  currentModel = entry;
   try { localStorage.setItem(MODEL_STORAGE_KEY, entry.id); } catch (err) { /* ignore */ }
   modelLoading = true;
   modelFailed = false;
@@ -224,6 +241,7 @@ function loadModel(modelId) {
     model: entry.id,
     templateOptions: entry.templateOptions,
     webgpuDtype: entry.webgpuDtype,
+    modelOptions: entry.modelOptions,
     device: DEVICE_OVERRIDE,
     dtype: DTYPE_OVERRIDE,
   });
@@ -252,9 +270,6 @@ function initModelSelect() {
 
 // ---- Chat --------------------------------------------------------------
 
-// Final user/assistant turns only. Tool traffic is left out to keep the
-// small model's prompt short.
-const history = [];
 let busy = false;
 
 function renderMarkdown(el, text) {
@@ -351,7 +366,6 @@ formEl.addEventListener('submit', async (event) => {
 
     const result = await runAgent({
       message,
-      history,
       tools: mcpTools,
       system: systemPrompt(mcp.serverInfo && mcp.serverInfo.name, mcp.instructions),
       generate: (messages, tools, onToken, prefill) => {
@@ -359,9 +373,7 @@ formEl.addEventListener('submit', async (event) => {
         live.remove();
         return generate(messages, tools, onToken, prefill);
       },
-      // Both offered models are small: without this they tend to answer
-      // data questions from imagination instead of calling a tool.
-      forceFirstToolCall: true,
+      toolCallPrefill: currentModel.toolCallPrefill,
       callTool: (name, args) => mcp.callTool(name, args),
       onEvent: (event) => {
         if (event.type === 'token') {
@@ -384,7 +396,6 @@ formEl.addEventListener('submit', async (event) => {
     live.remove();
     pending.remove();
     addMessage(result.reply, 'bot', result.usedTools, result.toolCalls);
-    history.push({ role: 'user', content: message }, { role: 'assistant', content: result.reply });
     if (result.toolCalls.length > 0) {
       renderGraph(result.toolCalls);
     }

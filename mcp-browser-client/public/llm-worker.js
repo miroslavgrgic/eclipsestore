@@ -1,7 +1,7 @@
 // Web Worker hosting the local chat model (Transformer.js), so that model
 // download, compilation and token generation never block the UI thread.
 //
-// Messages in:  {type: 'load', model, templateOptions, webgpuDtype?, device?, dtype?}
+// Messages in:  {type: 'load', model, templateOptions, webgpuDtype?, modelOptions?, device?, dtype?}
 //               {type: 'generate', id, messages, tools, prefill?, maxNewTokens}
 //               {type: 'interrupt'}
 // Messages out: {type: 'progress', loaded, total, file}
@@ -54,7 +54,7 @@ async function pickDevice(webgpuDtype = 'q4') {
   return { device: 'wasm', dtype: 'q4' };
 }
 
-async function load(modelId, options, webgpuDtype, override) {
+async function load(modelId, options, webgpuDtype, modelOptions, override) {
   if (model) {
     await model.dispose();
     model = null;
@@ -83,15 +83,15 @@ async function load(modelId, options, webgpuDtype, override) {
   if (override.device) target = { ...target, device: override.device };
   if (override.dtype) target = { ...target, dtype: override.dtype };
   try {
-    model = await loadModel(modelId, target, progress_callback);
+    model = await loadModel(modelId, { ...target, modelOptions }, progress_callback);
   } catch (err) {
     if (target.device !== 'webgpu') throw err;
     // WebGPU is available but unusable (driver / adapter quirks) - use WASM.
     console.warn('WebGPU failed, falling back to WASM:', err);
     target = { device: 'wasm', dtype: 'q4' };
-    model = await loadModel(modelId, target, progress_callback);
+    model = await loadModel(modelId, { ...target, modelOptions }, progress_callback);
   }
-  loaded = { modelId, target };
+  loaded = { modelId, target: { ...target, modelOptions } };
   self.postMessage({ type: 'ready', model: modelId, ...target });
 }
 
@@ -108,8 +108,8 @@ async function recover() {
   model = await loadModel(loaded.modelId, loaded.target);
 }
 
-async function loadModel(modelId, { device, dtype }, progress_callback) {
-  const instance = await AutoModelForCausalLM.from_pretrained(modelId, { device, dtype, progress_callback });
+async function loadModel(modelId, { device, dtype, modelOptions }, progress_callback) {
+  const instance = await AutoModelForCausalLM.from_pretrained(modelId, { ...modelOptions, device, dtype, progress_callback });
   try {
     // Warm-up: compiles the WebGPU shaders now instead of on the first question.
     await instance.generate({ ...tokenizer('a'), max_new_tokens: 1 });
@@ -189,7 +189,7 @@ async function generate({ id, messages, tools, prefill, maxNewTokens }) {
 self.addEventListener('message', async ({ data }) => {
   try {
     if (data.type === 'load') {
-      await load(data.model, data.templateOptions, data.webgpuDtype, { device: data.device, dtype: data.dtype });
+      await load(data.model, data.templateOptions, data.webgpuDtype, data.modelOptions, { device: data.device, dtype: data.dtype });
     } else if (data.type === 'generate') {
       await generate(data);
     } else if (data.type === 'interrupt') {
