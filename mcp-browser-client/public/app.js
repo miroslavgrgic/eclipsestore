@@ -43,9 +43,9 @@ const MODELS = [
   // For machines with a strong GPU - not tested. Their weights come as
   // external data files (the format Hugging Face's WebGPU demos use for
   // models of this size), split into the given number of chunks.
-  { id: 'onnx-community/Llama-3.2-1B-Instruct-ONNX', label: 'Llama 3.2 1B Instruct (1.1 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 1 } },
-  { id: 'onnx-community/Llama-3.2-3B-Instruct-ONNX', label: 'Llama 3.2 3B Instruct (2.4 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 2 } },
-  { id: 'onnx-community/Qwen3-4B-ONNX', label: 'Qwen3 4B (2.8 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: QWEN_TOOL_CALL, templateOptions: { enable_thinking: false }, modelOptions: { use_external_data_format: 2 }, webgpuOnly: true },
+  { id: 'onnx-community/Llama-3.2-1B-Instruct-ONNX', label: 'Llama 3.2 1B Instruct (1.1 GB)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 1 } },
+  { id: 'onnx-community/Llama-3.2-3B-Instruct-ONNX', label: 'Llama 3.2 3B Instruct (2.4 GB)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 2 } },
+  { id: 'onnx-community/Qwen3-4B-ONNX', label: 'Qwen3 4B (2.8 GB)', webgpuDtype: 'q4f16', toolCallPrefill: QWEN_TOOL_CALL, templateOptions: { enable_thinking: false }, modelOptions: { use_external_data_format: 2 }, webgpuOnly: true },
   // Not offered: Qwen2.5 1.5B and Qwen3 1.7B ship as single files of 1.4 GB
   // and more, which fail to load in the browser (std::bad_alloc), and
   // Qwen2.5 breaks with fp16 weights - see README.
