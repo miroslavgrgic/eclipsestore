@@ -34,6 +34,7 @@ const DTYPE_OVERRIDE = params.get('dtype');
 //                    looks the data up instead of inventing an answer
 //   templateOptions  extra chat template variables
 //   modelOptions     extra from_pretrained() options
+//   webgpuOnly       no q4 weights for the WASM fallback in the repo
 const QWEN_TOOL_CALL = '<tool_call>\n';
 const LLAMA_TOOL_CALL = '{"name": "';
 const MODELS = [
@@ -44,7 +45,7 @@ const MODELS = [
   // models of this size), split into the given number of chunks.
   { id: 'onnx-community/Llama-3.2-1B-Instruct-ONNX', label: 'Llama 3.2 1B Instruct (1.1 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 1 } },
   { id: 'onnx-community/Llama-3.2-3B-Instruct-ONNX', label: 'Llama 3.2 3B Instruct (2.4 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: LLAMA_TOOL_CALL, modelOptions: { use_external_data_format: 2 } },
-  { id: 'onnx-community/Qwen3-4B-ONNX', label: 'Qwen3 4B (2.8 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: QWEN_TOOL_CALL, templateOptions: { enable_thinking: false }, modelOptions: { use_external_data_format: 2 } },
+  { id: 'onnx-community/Qwen3-4B-ONNX', label: 'Qwen3 4B (2.8 GB, untested)', webgpuDtype: 'q4f16', toolCallPrefill: QWEN_TOOL_CALL, templateOptions: { enable_thinking: false }, modelOptions: { use_external_data_format: 2 }, webgpuOnly: true },
   // Not offered: Qwen2.5 1.5B and Qwen3 1.7B ship as single files of 1.4 GB
   // and more, which fail to load in the browser (std::bad_alloc), and
   // Qwen2.5 breaks with fp16 weights - see README.
@@ -242,6 +243,7 @@ function loadModel(modelId) {
     templateOptions: entry.templateOptions,
     webgpuDtype: entry.webgpuDtype,
     modelOptions: entry.modelOptions,
+    webgpuOnly: entry.webgpuOnly,
     device: DEVICE_OVERRIDE,
     dtype: DTYPE_OVERRIDE,
   });

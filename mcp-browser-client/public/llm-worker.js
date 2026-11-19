@@ -1,7 +1,7 @@
 // Web Worker hosting the local chat model (Transformer.js), so that model
 // download, compilation and token generation never block the UI thread.
 //
-// Messages in:  {type: 'load', model, templateOptions, webgpuDtype?, modelOptions?, device?, dtype?}
+// Messages in:  {type: 'load', model, templateOptions, webgpuDtype?, modelOptions?, webgpuOnly?, device?, dtype?}
 //               {type: 'generate', id, messages, tools, prefill?, maxNewTokens}
 //               {type: 'interrupt'}
 // Messages out: {type: 'progress', loaded, total, file}
@@ -54,7 +54,7 @@ async function pickDevice(webgpuDtype = 'q4') {
   return { device: 'wasm', dtype: 'q4' };
 }
 
-async function load(modelId, options, webgpuDtype, modelOptions, override) {
+async function load(modelId, options, webgpuDtype, modelOptions, webgpuOnly, override) {
   if (model) {
     await model.dispose();
     model = null;
@@ -82,10 +82,16 @@ async function load(modelId, options, webgpuDtype, modelOptions, override) {
   let target = await pickDevice(webgpuDtype);
   if (override.device) target = { ...target, device: override.device };
   if (override.dtype) target = { ...target, dtype: override.dtype };
+  if (webgpuOnly && target.device !== 'webgpu') {
+    throw new Error(`${modelId} needs WebGPU, which is not available in this browser - pick a smaller model.`);
+  }
   try {
     model = await loadModel(modelId, { ...target, modelOptions }, progress_callback);
   } catch (err) {
     if (target.device !== 'webgpu') throw err;
+    if (webgpuOnly) {
+      throw new Error(`${modelId} does not run on this GPU and has no WASM build - pick a smaller model. (${err.message || err})`);
+    }
     // WebGPU is available but unusable (driver / adapter quirks) - use WASM.
     console.warn('WebGPU failed, falling back to WASM:', err);
     target = { device: 'wasm', dtype: 'q4' };
@@ -189,7 +195,7 @@ async function generate({ id, messages, tools, prefill, maxNewTokens }) {
 self.addEventListener('message', async ({ data }) => {
   try {
     if (data.type === 'load') {
-      await load(data.model, data.templateOptions, data.webgpuDtype, data.modelOptions, { device: data.device, dtype: data.dtype });
+      await load(data.model, data.templateOptions, data.webgpuDtype, data.modelOptions, data.webgpuOnly, { device: data.device, dtype: data.dtype });
     } else if (data.type === 'generate') {
       await generate(data);
     } else if (data.type === 'interrupt') {
