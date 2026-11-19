@@ -27,7 +27,7 @@ const DEVICE_OVERRIDE = params.get('device');
 const DTYPE_OVERRIDE = params.get('dtype');
 
 // Chat models with tool calling support in their chat template, available
-// as ONNX builds for Transformer.js.
+// as ONNX builds for Transformers.js.
 //   webgpuDtype      weight format on WebGPU (default q4, see llm-worker.js)
 //   toolCallPrefill  opening of a tool call in the model's own format; the
 //                    first reply is forced to start with it, so the model

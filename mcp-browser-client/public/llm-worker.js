@@ -1,4 +1,4 @@
-// Web Worker hosting the local chat model (Transformer.js), so that model
+// Web Worker hosting the local chat model (Transformers.js), so that model
 // download, compilation and token generation never block the UI thread.
 //
 // Messages in:  {type: 'load', model, templateOptions, webgpuDtype?, modelOptions?, webgpuOnly?, device?, dtype?}
