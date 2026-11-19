@@ -45,6 +45,7 @@ def _request(base_url: str, path: str, method: str, payload):
 
 MALE_FIRST_NAMES = [
     "Ivan", "Marko", "Luka", "Josip", "Ante", "Tin", "Filip", "Petar", "Stjepan", "Mario",
+    "Lukas", "Maximilian", "Felix", "Jonas", "Leon", "Paul", "Moritz", "Tobias", "Florian", "Jürgen",
     "David", "Michael", "James", "Robert", "Thomas", "Daniel", "Matthew", "Ryan", "Jack", "Henry",
     "Ahmed", "Mohammed", "Hassan", "Omar", "Khalid",
     "Chen", "Wei", "Jian", "Kenji", "Hiroshi", "Haruto",
@@ -54,6 +55,7 @@ MALE_FIRST_NAMES = [
 
 FEMALE_FIRST_NAMES = [
     "Ana", "Ivana", "Petra", "Nina", "Ema", "Lucija", "Klara", "Dora", "Iva", "Marta",
+    "Lena", "Hannah", "Lea", "Johanna", "Katharina", "Greta", "Frieda", "Jana", "Sabine", "Jördis",
     "Emma", "Olivia", "Isabella", "Mia", "Charlotte", "Amelia", "Sophia", "Grace", "Chloe", "Zoe",
     "Fatima", "Aisha", "Zainab", "Layla", "Noor",
     "Mei", "Yuki", "Sakura", "Hana", "Jiwoo",
@@ -63,7 +65,8 @@ FEMALE_FIRST_NAMES = [
 
 LAST_NAMES = [
     "Horvat", "Kovacevic", "Novak", "Babic", "Maric", "Peric", "Juric", "Vidovic", "Kovac", "Knezevic",
-    "Smith", "Johnson", "Brown", "Williams", "Taylor", "Muller", "Schmidt", "Fischer", "Weber",
+    "Schneider", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann", "Schäfer", "Koch", "Bauer", "Größer",
+    "Smith", "Johnson", "Brown", "Williams", "Taylor", "Müller", "Schmidt", "Fischer", "Weber",
     "Dubois", "Martin", "Garcia", "Rodriguez", "Fernandez", "Silva", "Santos", "Oliveira", "Costa",
     "Ivanov", "Petrov", "Novikov", "Sokolov",
     "Nguyen", "Tran", "Kim", "Park", "Wang", "Li", "Zhang", "Tanaka", "Suzuki", "Sato",
@@ -136,7 +139,7 @@ ADDRESSES_BY_CONTINENT = {
 
 # Room names are inspired by the original README example (a single town
 # name, e.g. "Jajce") - reused here with a room number suffix for uniqueness.
-ROOM_TOWNS = [
+ROOM_TOWNS_CROATIA = [
     "Jajce", "Mostar", "Pula", "Rovinj", "Zadar", "Sibenik", "Split", "Dubrovnik",
     "Rijeka", "Varazdin", "Osijek", "Vukovar", "Karlovac", "Cakovec", "Bjelovar",
     "Koprivnica", "Krapina", "Gospic", "Otocac", "Slavonski Brod", "Vinkovci",
@@ -145,6 +148,19 @@ ROOM_TOWNS = [
     "Makarska", "Metkovic", "Ploce", "Knin", "Sinj", "Imotski", "Vis", "Hvar",
     "Korcula", "Lastovo", "Mljet", "Cres", "Krk", "Rab", "Pag", "Biograd",
     "Nin", "Opatija", "Porec", "Umag", "Novigrad", "Motovun", "Buzet", "Labin",
+]
+
+ROOM_TOWNS = [
+    "Berlin", "Hamburg", "München", "Köln", "Frankfurt am Main", "Stuttgart",
+    "Düsseldorf", "Leipzig", "Dortmund", "Essen", "Bremen", "Dresden",
+    "Hannover", "Nürnberg", "Duisburg", "Bochum", "Wuppertal", "Bielefeld",
+    "Bonn", "Münster", "Mannheim", "Karlsruhe", "Augsburg", "Wiesbaden",
+    "Aachen", "Kiel", "Rostock", "Mainz", "Freiburg im Breisgau", "Erfurt",
+    "Lübeck", "Magdeburg", "Potsdam", "Heidelberg", "Regensburg", "Würzburg",
+    "Ingolstadt", "Ulm", "Trier", "Jena", "Göttingen", "Bamberg", "Passau",
+    "Konstanz", "Weimar", "Schwerin", "Stralsund", "Wismar", "Lindau",
+    "Rothenburg ob der Tauber", "Garmisch-Partenkirchen", "Baden-Baden",
+    "Quedlinburg", "Goslar", "Celle", "Lüneburg", "Flensburg", "Coburg",
 ]
 
 
