@@ -18,7 +18,7 @@ final class ToolUsageRecorder {
     }
 
     static void record(String toolName, String input, String output) {
-        TOOL_CALLS.get().add(new ToolCall(toolName, input, output));
+        TOOL_CALLS.get().add(new ToolCall(toolName, input, output, ServerDuration.of(output)));
     }
 
     static void reset() {

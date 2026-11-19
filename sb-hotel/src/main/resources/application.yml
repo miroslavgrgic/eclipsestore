@@ -8,6 +8,8 @@ spring:
       server:
         name: eclipsestore-mcp
         protocol: stateless
+        # tools are registered by McpToolConfig to add the response time to the payload
+        tool-callback-converter: false
 
 eclipsestore:
   path: ${ES_PATH:sb-hotel/es/ittage}
