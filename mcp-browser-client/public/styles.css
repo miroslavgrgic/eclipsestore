@@ -453,6 +453,13 @@ body.resizing-cols #graph-container { pointer-events: none; }
   font-size: 11.5px;
   font-weight: 500;
 }
+.tool-time {
+  margin-left: 6px;
+  padding-left: 6px;
+  border-left: 1px solid currentColor;
+  font-weight: 400;
+  opacity: 0.75;
+}
 .graph-btn {
   margin-left: auto;
   height: 26px;

@@ -278,6 +278,27 @@ function renderMarkdown(el, text) {
   el.innerHTML = DOMPurify.sanitize(marked.parse(text));
 }
 
+function formatMs(ms) {
+  return ms < 1000 ? `${ms} ms` : `${(ms / 1000).toFixed(2)} s`;
+}
+
+// Total MCP time of a tool's calls: the round trip measured in the browser
+// and, if the server reports it, its own processing time.
+function toolTiming(calls) {
+  const timed = calls.filter(call => typeof call.durationMs === 'number');
+  if (timed.length === 0) return null;
+  const total = timed.reduce((sum, call) => sum + call.durationMs, 0);
+  const server = timed.filter(call => typeof call.serverDurationMs === 'number');
+  const serverTotal = server.reduce((sum, call) => sum + call.serverDurationMs, 0);
+  const text = server.length === timed.length
+    ? `${formatMs(total)} · server ${formatMs(serverTotal)}`
+    : formatMs(total);
+  const title = timed.map(call => typeof call.serverDurationMs === 'number'
+    ? `${call.input}: ${formatMs(call.durationMs)} round trip, ${formatMs(call.serverDurationMs)} on the server`
+    : `${call.input}: ${formatMs(call.durationMs)} round trip`).join('\n');
+  return { text, title };
+}
+
 function addMessage(text, className, usedTools, toolCalls) {
   const el = document.createElement('div');
   el.className = 'msg ' + className;
@@ -306,6 +327,14 @@ function addMessage(text, className, usedTools, toolCalls) {
         badge.style.backgroundColor = color.bg;
         badge.style.color = color.fg;
         badge.textContent = count > 1 ? `${name} ×${count}` : name;
+        const timing = toolTiming((toolCalls || []).filter(call => call.name === name));
+        if (timing) {
+          const time = document.createElement('span');
+          time.className = 'tool-time';
+          time.textContent = timing.text;
+          badge.title = timing.title;
+          badge.appendChild(time);
+        }
         toolsEl.appendChild(badge);
       }
 

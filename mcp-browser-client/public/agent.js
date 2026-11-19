@@ -104,6 +104,16 @@ function truncate(text, max) {
  *                                      models otherwise tend to answer data questions from imagination
  * @returns {Promise<{reply: string, usedTools: string[], toolCalls: Array}>}
  */
+// Server side processing time of a tools/call result: the sb-hotel MCP server
+// reports it as _meta.durationMs on every returned content block.
+function serverDuration(result) {
+  for (const block of result.content || []) {
+    const duration = block._meta && block._meta.durationMs;
+    if (typeof duration === 'number') return duration;
+  }
+  return null;
+}
+
 // Every question is answered on its own: earlier questions and answers are
 // not part of the prompt.
 export async function runAgent({ message, tools, system, generate, callTool, onEvent = () => {}, toolCallPrefill = '' }) {
@@ -152,13 +162,17 @@ export async function runAgent({ message, tools, system, generate, callTool, onE
       onEvent({ type: 'tool-start', name: call.name, arguments: call.arguments });
       let resultText;
       try {
+        const started = performance.now();
         const result = await callTool(call.name, call.arguments);
+        const durationMs = Math.round(performance.now() - started);
         resultText = toolResultText(result);
         usedTools.push(call.name);
         toolCalls.push({
           name: call.name,
           input: JSON.stringify(call.arguments),
           output: JSON.stringify(result.content || []),
+          durationMs,
+          serverDurationMs: serverDuration(result),
         });
         if (result.isError) {
           resultText = `Tool error: ${resultText}\nCorrect the arguments and call the tool again.`;
