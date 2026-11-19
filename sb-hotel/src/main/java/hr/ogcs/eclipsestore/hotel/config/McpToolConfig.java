@@ -6,6 +6,7 @@ import hr.ogcs.eclipsestore.hotel.domain.guest.api.mcp.GuestMcpTools;
 import hr.ogcs.eclipsestore.hotel.domain.payment.api.mcp.PaymentMcpTools;
 import io.modelcontextprotocol.server.McpStatelessServerFeatures;
 import io.modelcontextprotocol.spec.McpSchema;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.mcp.McpToolUtils;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
@@ -19,6 +20,7 @@ import java.util.Map;
 /**
  * Registering the MCP Tools. Mandatory for every new MCP interface.
  */
+@Slf4j
 @Configuration
 public class McpToolConfig {
 
@@ -59,6 +61,7 @@ public class McpToolConfig {
                     long start = System.nanoTime();
                     McpSchema.CallToolResult result = specification.callHandler().apply(context, request);
                     long durationMs = (System.nanoTime() - start) / 1_000_000;
+                    log.info("MCP tool '{}' answered in {} ms", request.name(), durationMs);
                     return withDuration(result, durationMs);
                 })
                 .build();
