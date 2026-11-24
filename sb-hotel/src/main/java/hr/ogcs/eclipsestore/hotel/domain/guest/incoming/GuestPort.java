@@ -14,6 +14,7 @@ public interface GuestPort {
 
     // FIXME too much power for the users of this interface!!
     Guest createGuest(Guest guest);
+    Guest updateGuest(Guest guest);
     void deleteGuestByID(UUID id);
 
 }

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotel Data Assistant</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/standalone/umd/vis-network.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="rail">
+      <div class="brand">
+        <div class="logo-badge" role="img" aria-label="Hotel Data Assistant logo">H</div>
+        <div class="brand-text">
+          <h1 class="brand-title">Hotel Data Assistant</h1>
+          <p class="brand-subtitle">MCP Client</p>
+        </div>
+      </div>
+      <details id="tools-panel" open>
+        <summary>Available MCP tools</summary>
+        <div id="tools-list"></div>
+      </details>
+      <div class="col-resizer" data-col="rail" role="separator" aria-orientation="vertical" aria-label="Resize tools panel" tabindex="0"></div>
+    </aside>
+
+    <main class="chat">
+      <header class="intro">
+        <h2>What would you like to know about your bookings?</h2>
+        <p>Answers come from the hotel database through MCP tools. Each reply lists the tools it called.</p>
+        <div class="suggestions">
+          <button type="button" class="suggestion">Which 3 bookings in April 2026 had the most guests?</button>
+          <button type="button" class="suggestion">Which payments are still open from Q1 2026?</button>
+          <button type="button" class="suggestion">Find guests similar to our most frequent guest</button>
+        </div>
+      </header>
+      <div id="messages"></div>
+      <div class="composer">
+        <form id="chat-form">
+          <input type="text" id="chat-input" placeholder="Ask about hotel data..." autocomplete="off" autofocus />
+          <button type="submit" id="chat-submit">Send</button>
+        </form>
+        <p class="composer-note">Answers are generated from MCP tool results. Check important figures.</p>
+      </div>
+    </main>
+
+    <details id="graph-panel">
+      <summary>Data graph</summary>
+      <div class="col-resizer" data-col="graph" role="separator" aria-orientation="vertical" aria-label="Resize data graph panel" tabindex="0"></div>
+      <div id="graph-legend"></div>
+      <div id="graph-container"></div>
+      <div id="graph-empty"></div>
+    </details>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="resize.js"></script>
+  <script>
+    document.querySelectorAll('.suggestion').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.getElementById('chat-input').value = btn.textContent;
+        document.getElementById('chat-form').requestSubmit();
+      });
+    });
+  </script>
+</body>
+</html>

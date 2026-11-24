@@ -31,8 +31,8 @@ public class GuestService {
             throw new IllegalArgumentException("Invalid guest");
         }
 
-        storageService.hotel.getGuests().add(guest);
-        storageService.store(storageService.hotel.getGuests());
+        storageService.hotel.getGuestMap().add(guest);
+        storageService.storageManager.store(storageService.hotel.getGuestMap());
         return guest;
     }
 
@@ -48,23 +48,35 @@ public class GuestService {
                 .findFirst();
     }
 
+    public Guest updateGuest(Guest updatedGuest) {
+        if (!updatedGuest.hasValidData()) {
+            throw new IllegalArgumentException("Invalid guest");
+        }
+
+        Guest existing = findById(updatedGuest.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Trying to update entry that does not exist!"));
+
+        storageService.hotel.getGuestMap().replace(existing, updatedGuest);
+        storageService.storageManager.store(storageService.hotel.getGuestMap());
+        log.info("Updated Guest with ID {}", updatedGuest.getId());
+        return updatedGuest;
+    }
+
     public void deleteGuestByID(UUID id) {
-        Optional<Guest> guest = storageService.hotel.getGuests().stream()
-                .filter(item -> item.getId().equals(id))
-                .findFirst();
+        Optional<Guest> guest = findById(id);
 
         if (guest.isEmpty()) {
             throw new IllegalArgumentException("Trying to delete entry that does not exist!");
         } else {
-            storageService.hotel.getGuests().remove(guest.get());
-            storageService.storageManager.store(storageService.hotel.getGuests());
+            storageService.hotel.getGuestMap().remove(guest.get());
+            storageService.storageManager.store(storageService.hotel.getGuestMap());
             log.info("Deleted Guest with ID {}", id);
         }
     }
 
     public void createGuests(List<Guest> guests) {
-        storageService.hotel.getGuests().addAll(guests);
-        storageService.storageManager.store(storageService.hotel.getGuests());
+        storageService.hotel.getGuestMap().addAll(guests);
+        storageService.storageManager.store(storageService.hotel.getGuestMap());
     }
 
 }

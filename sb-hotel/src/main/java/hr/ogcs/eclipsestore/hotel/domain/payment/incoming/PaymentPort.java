@@ -10,5 +10,6 @@ public interface PaymentPort {
 
     Map<UUID, Payment> getAllPayments();
     void processPayment(Booking booking);
+    UUID createPayment(Payment payment);
 
 }

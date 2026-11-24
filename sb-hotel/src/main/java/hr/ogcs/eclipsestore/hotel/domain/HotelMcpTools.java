@@ -1,0 +1,122 @@
+package hr.ogcs.eclipsestore.hotel.domain;
+
+import hr.ogcs.eclipsestore.hotel.domain.booking.Booking;
+import hr.ogcs.eclipsestore.hotel.domain.filter.EntityFilter;
+import hr.ogcs.eclipsestore.hotel.domain.guest.Guest;
+import hr.ogcs.eclipsestore.hotel.domain.payment.model.Payment;
+import hr.ogcs.eclipsestore.hotel.domain.room.Room;
+import hr.ogcs.eclipsestore.hotel.repository.StorageService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+
+@Component
+@Slf4j
+public class HotelMcpTools {
+
+    private final StorageService storageService;
+
+    public HotelMcpTools(StorageService storageService) {
+        this.storageService = storageService;
+    }
+
+    @Tool(name = "getFilteredHotel", description = "Query the hotel's data restricted to the bookings, guests, rooms and payments matching the " +
+            "given criteria. Each criteria map's keys are the filterable field names of the corresponding entity. Suffix a key with " +
+            "'_gte' or '_lte' to filter numeric/date fields by range, '_contains' for a case-insensitive substring match on text fields, " +
+            "or '_in' to match any value from a list. Omit a criteria map (or pass null/empty) to include all entities of that type.")
+    public Hotel getFilteredHotel(
+            @ToolParam(description = "Booking filter criteria. " +
+                    "Filterable fields: id, from, to, price, paymentStatus (OPEN, PAID, CANCELLED)." +
+                    "A booking has minimum one guest older than 18 years."
+                    , required = false)
+            Map<String, Object> bookingCriteria,
+            @ToolParam(description = "Guest (customer) filter criteria. Filterable fields: id, firstName, lastName, age.", required = false)
+            Map<String, Object> guestCriteria,
+            @ToolParam(description = "Room filter criteria. " +
+                    "Filterable fields: id, name, defaultPrice, sqm, canBeUsedWithHandicaps, state (FREE, BLOCKED), availableSince.", required = false)
+            Map<String, Object> roomCriteria,
+            @ToolParam(description = "Payment filter criteria. Filterable fields: paymentProviderId, paymentDate.", required = false)
+            Map<String, Object> paymentCriteria) {
+
+        log.info("getFilteredHotel payload received from MCP client: [bookingCriteria={}, guestCriteria={}, " +
+                        "roomCriteria={}, paymentCriteria={}]",
+                bookingCriteria, guestCriteria, roomCriteria, paymentCriteria);
+
+        long startTime = System.currentTimeMillis();
+
+        Hotel hotel = storageService.hotel;
+
+        List<Room> rooms = roomCriteria != null ? EntityFilter.filter(hotel.getRooms(), roomCriteria) : new ArrayList<>();
+        List<Guest> guests = guestCriteria != null ? EntityFilter.filter(hotel.getGuests(), guestCriteria) : new ArrayList<>();
+        List<Booking> bookings = bookingCriteria != null ? EntityFilter.filter(hotel.getBookings(), bookingCriteria) : new ArrayList<>();
+        Map<UUID, Payment> payments = paymentCriteria != null ? EntityFilter.filterValues(hotel.getPayments(), paymentCriteria) : new HashMap<>();
+
+        Hotel filteredHotel = new Hotel(hotel.getName(), hotel.acceptsCreditCards(),
+                rooms, guests, bookings, payments
+        );
+
+        long durationMs = System.currentTimeMillis() - startTime;
+        log.info("getFilteredHotel resolved in {} ms, payload sent to MCP client: [rooms={}, guests={}, bookings={}, payments={}]",
+                durationMs, rooms, guests, bookings, payments.values());
+
+        return filteredHotel;
+    }
+
+    @Tool(name = "getGuestKnowledge", description = "Query all information about a dedicated guest including bookings, rooms, payments.")
+    public GuestKnowledgeDTO getGuestKnowledge(
+            @ToolParam(description = "The guest's UUID.") UUID guestId) {
+
+        Hotel hotel = storageService.hotel;
+
+        var guest = hotel.getGuests().stream()
+                .filter(g -> g.getId().equals(guestId)).findFirst().orElseThrow(IllegalArgumentException::new);
+        var bookings = hotel.getBookings().stream()
+                .filter(b -> b.getGuests().stream().anyMatch(g -> g.getId().equals(guestId)))
+                .toList();
+        var rooms = bookings.stream().map(Booking::getRoom).toList();
+        var payments = hotel.getPayments().values().stream()
+                .filter(payment -> bookings.contains(payment.getBooking())).toList();
+
+        log.info("getGuestKnowledge payload sent to MCP client: [guest={}, bookings={}, rooms={}, payments={}]",
+                guest, bookings, rooms, payments);
+        return new GuestKnowledgeDTO(guest, rooms, bookings, payments);
+    }
+
+    public record GuestKnowledgeDTO(Guest guest, List<Room> rooms, List<Booking> bookings, List<Payment> payments) {}
+
+    @Tool(name = "getBookingKnowledge", description = "Query all information about a dedicated booking including guests, rooms, payments.")
+    public BookingKnowledgeDTO getBookingKnowledge(
+            @ToolParam(description = "The booking's UUID.") UUID bookingId) {
+
+        Hotel hotel = storageService.hotel;
+
+        var booking = hotel.getBookings().stream()
+                .filter(b -> b.getId().equals(bookingId)).findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+
+        log.info("getBookingKnowledge payload sent to MCP client: [booking={}]", booking);
+        return new BookingKnowledgeDTO(booking);
+    }
+
+    public record BookingKnowledgeDTO(Booking booking) {}
+
+    @Tool(name = "getHotelStatistics", description = "Query statistics about the hotel's entities: " +
+            "the total number of guests, rooms, bookings and payments.")
+    public HotelStatisticsDTO getHotelStatistics() {
+        Hotel hotel = storageService.hotel;
+        var statistics = new HotelStatisticsDTO(
+                hotel.getGuests().size(),
+                hotel.getRooms().size(),
+                hotel.getBookings().size(),
+                hotel.getPayments().size());
+
+        log.info("getHotelStatistics payload sent to MCP client: [statistics={}]", statistics);
+        return statistics;
+    }
+
+    public record HotelStatisticsDTO(int guests, int rooms, int bookings, int payments) {}
+
+}

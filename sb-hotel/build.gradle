@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.5.6'
-	id 'io.spring.dependency-management' version '1.1.6'
+	id 'org.springframework.boot' version '4.1.1'
+	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'hr.ogcs.eclipsestore'
@@ -17,15 +17,22 @@ repositories {
 	mavenCentral()
 }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web:3.5.6'
+ext {
+    set('springAiVersion', "2.0.1")
+}
 
-	implementation 'org.eclipse.store:storage-embedded:1.3.2'
-	// implementation 'org.eclipse.store:storage-embedded:2.1.3'
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	implementation 'org.eclipse.store:storage-embedded:4.2.0'
+	implementation 'org.eclipse.store:gigamap:4.2.0'
+	implementation 'org.eclipse.store:gigamap-jvector:4.2.0'
 
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
 
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13'
+    implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc'
+
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
 
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
@@ -34,6 +41,25 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// gigamap-jvector's JVector engine uses the incubating java.lang.Vector SIMD API.
+// (gigamap-jvector's own build additionally opens/exports several java.base internals to its
+// "org.eclipse.serializer.base" module, but that only applies when running on the module path;
+// this app runs on the classpath, where jdk.incubator.vector alone is sufficient.)
+def jvectorJvmArgs = [
+	'--add-modules=jdk.incubator.vector',
+]
+
 tasks.named('test') {
 	useJUnitPlatform()
+	jvmArgs jvectorJvmArgs
+}
+
+tasks.named('bootRun') {
+	jvmArgs jvectorJvmArgs
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
 }
