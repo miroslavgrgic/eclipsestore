@@ -413,6 +413,17 @@ function addMessage(text, className, usedTools, toolCalls) {
         toolsEl.appendChild(badge);
       }
 
+      // Processing time reported by the MCP server itself (excluding network and LLM).
+      const timedCalls = (toolCalls || []).filter(call => typeof call.durationMs === 'number');
+      if (timedCalls.length > 0) {
+        const totalMs = timedCalls.reduce((sum, call) => sum + call.durationMs, 0);
+        const stat = document.createElement('span');
+        stat.className = 'msg-tools-stat';
+        stat.textContent = `MCP server: ${totalMs} ms`;
+        stat.title = timedCalls.map(call => `${call.name}: ${call.durationMs} ms`).join('\n');
+        toolsEl.appendChild(stat);
+      }
+
       if (toolCalls && toolCalls.length > 0) {
         const graphBtn = document.createElement('button');
         graphBtn.type = 'button';

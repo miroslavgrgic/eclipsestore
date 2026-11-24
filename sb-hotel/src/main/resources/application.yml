@@ -8,7 +8,17 @@ spring:
       server:
         name: eclipsestore-mcp
         protocol: stateless
+        # tools are registered by McpToolConfig to add the response time to the payload
+        tool-callback-converter: false
+
+logging:
+  level:
+    # stateless MCP server has no notification handlers (SDK passes Map.of()),
+    # so every client's notifications/initialized is logged as WARN
+    io.modelcontextprotocol.server.DefaultMcpStatelessServerHandler: ERROR
+    # logs every client initialize request at INFO
+    io.modelcontextprotocol.server.McpStatelessAsyncServer: WARN
 
 eclipsestore:
-  path: ${ES_PATH:sb-hotel/database-vector}
+  path: ${ES_PATH:sb-hotel/es/ittage}
 
